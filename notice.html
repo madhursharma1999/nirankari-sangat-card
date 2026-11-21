@@ -472,6 +472,15 @@ $("add").onclick = () => {
 };
 $("date").value = state.date;
 $("date").oninput = e => { state.date = e.target.value; update(); };
+// If the page stays open past midnight (or is reopened from the background), move the date to the new today.
+let pageDay = todayISO();
+function refreshToday(){
+  const t = todayISO(); if (t === pageDay) return;
+  pageDay = t; state.date = t; $("date").value = t; update();
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshToday(); });
+addEventListener("focus", refreshToday);
+setInterval(refreshToday, 60000);
 $("appeal").oninput = e => { state.appeal = e.target.value === autoAppeal(state.sangats) ? "" : e.target.value; update(); };
 $("appealReset").onclick = () => { state.appeal = ""; update(); };
 
