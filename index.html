@@ -33,6 +33,7 @@ h1{font-size:20px;margin:0}
 .tbtn[aria-pressed="true"] span{color:var(--sel)}
 label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 4px}
 .sec+label{margin-top:0}
+.opt{font-weight:400;opacity:.8}
 input,textarea{width:100%;font:inherit;font-size:15px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:transparent;color:var(--ink)}
 input:focus,textarea:focus{outline:2px solid var(--sel);outline-offset:-1px}
 textarea{resize:vertical;min-height:72px;line-height:1.45}
@@ -107,7 +108,7 @@ New Palam Vihar, Gurugram</textarea>
     <label for="f_map">Location link (caption only)</label><input id="f_map" value="https://maps.app.goo.gl/8Lf9Hz1zyGzpFT767">
     <label for="f_manch">मंच संचालन</label><input id="f_manch" value="महात्मा नीरज जी">
     <label for="f_vichar">स्टेज से विचार</label><input id="f_vichar" value="महात्मा विवेक जी">
-    <label for="f_prasad">प्रसाद सेवा</label><input id="f_prasad" value="बहन संध्या मिश्रा जी">
+    <label for="f_prasad">प्रसाद सेवा <span class="opt">(optional)</span></label><input id="f_prasad" value="बहन संध्या मिश्रा जी">
     <label for="f_pt">Sewadal PT परेड</label><input id="f_pt" value="सुबह 7.00 बजे से 7.15 बजे तक">
     <label for="f_appeal">निवेदन</label><input id="f_appeal" value="अधिक से अधिक महात्मा पहुँचने का प्रयत्न करे जी।">
   </div>
@@ -203,8 +204,8 @@ function render(){
       <div class="c-panel c-sewa">
         <div class="c-r"><span class="l">मंच संचालन</span><span class="d"></span><span class="v">${v("manch")}</span></div>
         <div class="c-r"><span class="l">स्टेज से विचार</span><span class="d"></span><span class="v">${v("vichar")}</span></div>
-        <div class="c-r"><span class="l">प्रसाद सेवा</span><span class="d"></span><span class="v">${v("prasad")}</span></div>
-        <div class="c-r"><span class="l">Sewadl PT परेड</span><span class="d"></span><span class="v">${v("pt")}</span></div>
+        ${v("prasad") ? `<div class="c-r"><span class="l">प्रसाद सेवा</span><span class="d"></span><span class="v">${v("prasad")}</span></div>` : ""}
+        ${v("pt") ? `<div class="c-r"><span class="l">Sewadal PT परेड</span><span class="d"></span><span class="v">${v("pt")}</span></div>` : ""}
       </div>
       <div class="c-foot">
         <div class="c-appeal">${v("appeal")} 🙏🏻</div>
