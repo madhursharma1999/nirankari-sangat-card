@@ -63,6 +63,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .seg button+button{border-left:1px solid var(--field)}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accentInk)}
 .seg.ap{width:84px}
+.seg.kind{height:36px}
+.seg.kind button{padding:0 14px}
 .tsep{font-size:13px;color:var(--muted);font-weight:600;width:20px}
 .tpair{gap:8px 18px}
 .clear{border:0;background:none;color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;padding:4px 2px;text-decoration:underline;text-underline-offset:2px}
@@ -236,7 +238,7 @@ function buildMessage(state){
     if (sv) L.push(`🙏🏻 *स्टेज सेवा:* ${sv}`);
     if (sc) L.push(`🙏🏻 *स्टेज संचालन:* ${sc}`);
     const pr = person(s.prasad);
-    if (pr) L.push(`🙏🏻 *प्रसाद सेवा:* ${pr}`);
+    if (pr) L.push(`🙏🏻 *${s.prasadType || "प्रसाद सेवा"}:* ${pr}`);
     const pt = timeText(s.ptStart, s.ptEnd);
     if (pt) L.push("", `${clock(s.ptStart)} *सेवादल PT परेड:* ${pt}`);
     if (groupEnd[i]){
@@ -375,7 +377,9 @@ function renderList(){
         ${row(clock(s.start),"समय",timePair(i,"start","end"))}
         ${row("🙏🏻","स्टेज सेवा",personCtl(i,"seva"))}
         ${row("🙏🏻","स्टेज संचालन",personCtl(i,"sanchalan"))}
-        ${row("🙏🏻","प्रसाद सेवा",personCtl(i,"prasad"),{optional:true})}
+        ${row("🙏🏻","प्रसाद / लंगर सेवा",
+          `<span class="seg kind">${["प्रसाद सेवा","लंगर सेवा"].map(t=>`<button type="button" data-ptype="${t}" data-i="${i}" aria-pressed="${t===(s.prasadType||"प्रसाद सेवा")}">${t}</button>`).join("")}</span>`
+          + `<div class="mt8">${personCtl(i,"prasad")}</div>`,{optional:true, top:true})}
         ${row(clock(s.ptStart||"07:00"),"सेवादल PT परेड",timePair(i,"ptStart","ptEnd",true),{optional:true})}
         ${row("📍","स्थान",placeCtl(i),{top:true})}
       </div>
@@ -445,6 +449,8 @@ $("list").addEventListener("click", e => {
   if (apb){ apb.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b===apb)); return pickerChanged(apb.closest(".tp")); }
   const tb = e.target.closest("[data-title]");
   if (tb){ state.sangats[+tb.dataset.i][tb.dataset.pk].title = tb.dataset.title; renderList(); return update(); }
+  const pk = e.target.closest("[data-ptype]");
+  if (pk){ state.sangats[+pk.dataset.i].prasadType = pk.dataset.ptype; renderList(); return update(); }
   const cl = e.target.closest("[data-clear]");
   if (cl){ cl.dataset.clear.split(",").forEach(k => state.sangats[+cl.dataset.i][k] = ""); renderList(); return update(); }
   const b = e.target.closest("[data-act]");
