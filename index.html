@@ -301,5 +301,12 @@ render(); fit(); addEventListener("resize", fit);
 /* ?export=1 renders the exported PNG in-page (used to verify the download output). */
 if (qp.get("export")) toCanvas().then(c => { document.body.innerHTML=""; const i=new Image(); i.src=c.toDataURL(); i.style.width="540px"; document.body.appendChild(i); });
 </script>
+<!-- Visit counter (GoatCounter: no cookies, no personal data) -->
+<script data-goatcounter="https://madhursharma1999.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+  function gcEvent(name){ try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch(e){} }
+  [["dl","card: download image"],["cp","card: copy caption"],["sh","card: share to whatsapp"]]
+    .forEach(([id,name]) => { const b = document.getElementById(id); if (b) b.addEventListener("click", () => gcEvent(name)); });
+</script>
 </body>
 </html>
