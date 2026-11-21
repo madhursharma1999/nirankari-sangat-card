@@ -507,5 +507,12 @@ document.querySelectorAll("[data-share]").forEach(b => b.onclick = shareMsg);
 
 fillPeople(); renderList(); update();
 </script>
+<!-- Visit counter (GoatCounter: no cookies, no personal data) -->
+<script data-goatcounter="https://madhursharma1999.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+  function gcEvent(name){ try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch(e){} }
+  document.querySelectorAll("[data-share]").forEach(b => b.addEventListener("click", () => gcEvent("notice: share to whatsapp")));
+  document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => gcEvent("notice: copy message")));
+</script>
 </body>
 </html>
