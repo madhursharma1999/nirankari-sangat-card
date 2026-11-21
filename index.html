@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sangat Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{--bg:#f3f1ec;--panel:#fff;--ink:#26221e;--muted:#7a7068;--line:#e4ddd2;--btn:#8a5a14;--btnInk:#fff;--sel:#8a5a14}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#181614;--panel:#23201c;--ink:#f1ebe2;--muted:#a99d90;--line:#3a332c;--btn:#d1a04a;--btnInk:#181614;--sel:#d1a04a}}
+:root[data-theme="dark"]{--bg:#181614;--panel:#23201c;--ink:#f1ebe2;--muted:#a99d90;--line:#3a332c;--btn:#d1a04a;--btnInk:#181614;--sel:#d1a04a}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Devanagari",system-ui,sans-serif}
+.app{max-width:1120px;margin:0 auto;padding:24px 16px 40px;display:grid;gap:20px 32px;
+  grid-template-columns:minmax(0,400px) minmax(0,1fr);grid-template-areas:"head preview" "themes preview" "form preview" ". preview";align-items:start}
+@media (max-width:880px){.app{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "themes" "preview" "form"}}
+.head{grid-area:head}.themes{grid-area:themes}.form{grid-area:form}.preview{grid-area:preview;position:sticky;top:20px}
+@media (max-width:880px){.preview{position:static}}
+h1{font-size:20px;margin:0}
+.sub{color:var(--muted);font-size:13px;margin:4px 0 0}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.sec{font-size:12px;font-weight:700;color:var(--muted);margin:0 0 10px;letter-spacing:.4px}
+.tgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.tbtn{border:2px solid transparent;border-radius:10px;padding:0;background:none;cursor:pointer;font:inherit;color:var(--ink);text-align:center}
+.tbtn .sw{display:block;aspect-ratio:4/5;border-radius:8px;border:1px solid var(--line);position:relative;overflow:hidden}
+.tbtn .sw i{position:absolute;inset:5px;border:1px solid;border-radius:3px}
+.tbtn .sw b{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font:600 10px "Tiro Devanagari Hindi",serif;white-space:nowrap}
+.tbtn span{display:block;font-size:11.5px;font-weight:600;padding:5px 0 3px}
+.tbtn[aria-pressed="true"]{border-color:var(--sel)}
+.tbtn[aria-pressed="true"] span{color:var(--sel)}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 4px}
+.sec+label{margin-top:0}
+input,textarea{width:100%;font:inherit;font-size:15px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:transparent;color:var(--ink)}
+input:focus,textarea:focus{outline:2px solid var(--sel);outline-offset:-1px}
+textarea{resize:vertical;min-height:72px;line-height:1.45}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.stage{overflow:hidden;display:flex;justify-content:center}
+.fit{width:540px;flex:none;transform-origin:top left}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px auto 0;max-width:540px}
+button.a{font:inherit;font-weight:600;font-size:14px;padding:12px;border-radius:10px;border:1px solid var(--btn);cursor:pointer}
+.primary{background:var(--btn);color:var(--btnInk)}
+.share{display:block;width:100%;max-width:540px;margin:14px auto 0;background:#1f8f4e;border-color:#1f8f4e!important;color:#fff;font-size:15px!important}
+.share+.actions{margin-top:10px}.ghost{background:transparent;color:var(--btn)}
+.toast{font-size:13px;color:var(--muted);min-height:20px;margin-top:8px;text-align:center}
+
+/* ============ CARD (540×675 → exports 1080×1350) ============ */
+.card{width:540px;height:675px;position:relative;overflow:hidden;background:var(--c-bg);color:var(--c-ink);font-family:"Noto Sans Devanagari",sans-serif}
+.card .deco{position:absolute;inset:0}
+.card .inner{position:relative;height:100%;padding:40px 52px 34px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.c-lotus{width:76px;height:44px;display:block}
+.c-greet{font-family:"Tiro Devanagari Hindi",serif;font-size:34px;line-height:1.2;color:var(--c-accent);margin-top:4px}
+.c-date{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;font-size:14.5px;font-weight:600;color:var(--c-label)}
+.c-date i{flex:1;height:1px;background:var(--c-line)}
+.c-title{font-family:"Tiro Devanagari Hindi",serif;font-size:31px;line-height:1.25;color:var(--c-title);margin-top:12px}
+.c-panel{width:100%;background:var(--c-panel);border:1px solid var(--c-pborder);border-radius:12px;padding:12px 18px}
+.c-info{margin-top:14px}
+.c-k{font-size:12px;font-weight:600;color:var(--c-label);line-height:1.4}
+.c-v{font-size:15px;font-weight:600;color:var(--c-ink);line-height:1.5}
+.c-addr{font-size:14px;font-weight:500;line-height:1.55;white-space:pre-line;color:var(--c-ink)}
+.c-sep{height:1px;background:var(--c-line);margin:9px 24px}
+.c-sewa{margin-top:12px;display:grid;gap:8px;padding:14px 16px}
+.c-r{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);align-items:center;font-size:14.5px;line-height:1.35}
+.c-r .l{text-align:right;color:var(--c-label);font-weight:500}
+.c-r .d{width:5px;height:5px;border-radius:50%;background:var(--c-frame);justify-self:center}
+.c-r .v{text-align:left;color:var(--c-ink);font-weight:600}
+.c-foot{margin-top:auto;width:100%}
+.c-appeal{font-size:14px;line-height:1.5;color:var(--c-ink);opacity:.85}
+.c-close{font-family:"Tiro Devanagari Hindi",serif;font-size:24px;color:var(--c-accent);margin-top:4px;line-height:1.3}
+.c-hint{font-size:11px;color:var(--c-label);margin-top:3px;opacity:.85}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="head">
+    <h1>सत्संग कार्ड</h1>
+    <p class="sub">Pick a template, fill in the details, download the image.</p>
+  </div>
+
+  <div class="box themes">
+    <p class="sec">TEMPLATE</p>
+    <div class="tgrid" id="tgrid"></div>
+  </div>
+
+  <div class="preview">
+    <div class="stage" id="stage"><div class="fit" id="fit"><div class="card" id="card"></div></div></div>
+    <button class="a share" id="sh">Share to WhatsApp (image + map link)</button>
+    <div class="actions">
+      <button class="a ghost" id="dl">Download image</button>
+      <button class="a ghost" id="cp">Copy caption</button>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+  </div>
+
+  <div class="box form">
+    <p class="sec">DETAILS</p>
+    <label for="f_date">दिनांक</label><input id="f_date" value="बुधवार 18 नवंबर 2026">
+    <div class="row">
+      <div><label for="f_title">सत्संग</label><input id="f_title" value="सुबह की सत्संग"></div>
+      <div><label for="f_time">समय</label><input id="f_time" value="सुबह 7:30 बजे से 8:30 बजे तक"></div>
+    </div>
+    <label for="f_place">स्थान</label><textarea id="f_place">सन्त निरंकारी सत्संग भवन,
+C-291, Main 40 ft Road, Sai Kunj,
+New Palam Vihar, Gurugram</textarea>
+    <label for="f_map">Location link (caption only)</label><input id="f_map" value="https://maps.app.goo.gl/8Lf9Hz1zyGzpFT767">
+    <label for="f_manch">मंच संचालन</label><input id="f_manch" value="महात्मा नीरज जी">
+    <label for="f_vichar">स्टेज से विचार</label><input id="f_vichar" value="महात्मा विवेक जी">
+    <label for="f_prasad">प्रसाद सेवा</label><input id="f_prasad" value="बहन संध्या मिश्रा जी">
+    <label for="f_pt">Sewadal PT परेड</label><input id="f_pt" value="सुबह 7.00 बजे से 7.15 बजे तक">
+    <label for="f_appeal">निवेदन</label><input id="f_appeal" value="अधिक से अधिक महात्मा पहुँचने का प्रयत्न करे जी।">
+  </div>
+</div>
+
+<script>
+/* Each theme: CSS colours for the HTML, literal colours for SVG (html2canvas-safe). */
+const THEMES = {
+  shwet:  { name:"श्वेत",  bg:"linear-gradient(180deg,#ffffff 0%,#fdfbf6 60%,#f8f2e4 100%)",
+            accent:"#9a6b12", title:"#3a2a1a", ink:"#3b2f25", label:"#a2814a", line:"rgba(200,162,74,.45)",
+            panel:"rgba(200,162,74,.06)", pborder:"rgba(200,162,74,.32)", frame:"#c8a24a",
+            glow:"rgba(255,232,180,.55)", rays:0, petal:"#e8c8b8", petalOp:.35, l1:"#fff7f1", l2:"#f2d3c5" },
+  prabhat:{ name:"प्रभात", bg:"linear-gradient(180deg,#fff8e8 0%,#fdf1da 55%,#f6e3c2 100%)",
+            accent:"#8a5a14", title:"#6a1f1f", ink:"#3d2a1c", label:"#a07b3c", line:"rgba(201,162,84,.55)",
+            panel:"rgba(255,255,255,.55)", pborder:"rgba(201,162,84,.40)", frame:"#c9a254",
+            glow:"rgba(255,214,130,.75)", rays:.16, rayCol:"#e0b050", petal:"#e7b9a6", petalOp:.35, l1:"#fde6dc", l2:"#f1c0ae" },
+  aakash: { name:"आकाश",  bg:"linear-gradient(180deg,#f4f9fd 0%,#e4f0f9 55%,#cfe3f2 100%)",
+            accent:"#2b5c80", title:"#1d3a55", ink:"#22384b", label:"#6588a3", line:"rgba(120,160,192,.55)",
+            panel:"rgba(255,255,255,.75)", pborder:"rgba(140,178,206,.55)", frame:"#88afcb",
+            glow:"rgba(255,255,255,.95)", rays:.45, rayCol:"#ffffff", petal:"#ffffff", petalOp:.8, l1:"#ffffff", l2:"#d6e8f5" },
+  gulab:  { name:"गुलाब",  bg:"linear-gradient(180deg,#fff8f7 0%,#fdeceb 55%,#f8dadb 100%)",
+            accent:"#9a3c4a", title:"#6b1e2b", ink:"#46262b", label:"#b16f7a", line:"rgba(201,138,146,.55)",
+            panel:"rgba(255,255,255,.6)", pborder:"rgba(201,138,146,.40)", frame:"#c98a92",
+            glow:"rgba(255,226,226,.9)", rays:0, petal:"#e9a7b0", petalOp:.45, l1:"#fff1f1", l2:"#f3bcc3" },
+  ratri:  { name:"स्वर्ण",  bg:"radial-gradient(ellipse 90% 70% at 50% 25%,#2e2346 0%,#1c1530 55%,#110c1f 100%)",
+            accent:"#e9c77b", title:"#f7e8c4", ink:"#efe6d6", label:"#c8a868", line:"rgba(212,175,95,.45)",
+            panel:"rgba(212,175,95,.08)", pborder:"rgba(212,175,95,.35)", frame:"#d4af5f",
+            glow:"rgba(233,199,123,.22)", rays:.08, rayCol:"#e9c77b", petal:"#d4af5f", petalOp:.28, l1:"#f7e8c4", l2:"#d8b468" }
+};
+
+const $ = id => document.getElementById(id);
+const F = ["date","title","time","place","manch","vichar","prasad","pt","appeal","map"];
+const KEY = "sangatCard.v2";
+let theme = "shwet";
+
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function lotus(t){
+  return `<svg class="c-lotus" viewBox="0 0 120 68" aria-hidden="true">
+    <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${t.l1}"/><stop offset="1" stop-color="${t.l2}"/></linearGradient></defs>
+    <g stroke="${t.frame}" stroke-width="1.3" fill="url(#lg)" stroke-linejoin="round">
+      <path d="M60 56 C40 54 18 44 8 28 C26 30 44 38 60 56Z"/><path d="M60 56 C80 54 102 44 112 28 C94 30 76 38 60 56Z"/>
+      <path d="M60 56 C46 46 34 30 32 12 C46 22 56 36 60 56Z"/><path d="M60 56 C74 46 86 30 88 12 C74 22 64 36 60 56Z"/>
+      <path d="M60 56 C52 42 50 22 60 4 C70 22 68 42 60 56Z"/></g>
+    <path d="M24 62 Q60 55 96 62" fill="none" stroke="${t.frame}" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+}
+
+function deco(t){
+  const W=540,H=675,cx=270,cy=70;
+  let rays="";
+  if (t.rays){
+    for(let i=0;i<36;i++){
+      const a=(i/36)*Math.PI*2, w=0.045, R=620;
+      const x1=cx+R*Math.cos(a-w), y1=cy+R*Math.sin(a-w), x2=cx+R*Math.cos(a+w), y2=cy+R*Math.sin(a+w);
+      rays+=`<polygon points="${cx},${cy} ${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}"/>`;
+    }
+    rays=`<defs><radialGradient id="rg" cx="${cx}" cy="${cy}" r="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="${t.rayCol}" stop-opacity="${t.rays*2}"/><stop offset="1" stop-color="${t.rayCol}" stop-opacity="0"/></radialGradient></defs>
+      <g fill="url(#rg)">${rays}</g>`;
+  }
+  const corner = (tf) => `<g transform="${tf}" fill="none" stroke="${t.frame}" stroke-width="1.3" stroke-linecap="round">
+      <path d="M18 64 V30 Q18 18 30 18 H64"/><path d="M30 30 Q40 26 46 18 M30 30 Q26 40 18 46"/><circle cx="30" cy="30" r="2.6" fill="${t.frame}" stroke="none"/></g>`;
+  const p = [[62,200,-30,1],[480,250,40,.9],[56,520,20,.9],[486,560,-45,1],[452,120,10,.75],[92,612,-15,.75]]
+    .map(([x,y,r,s])=>`<ellipse cx="${x}" cy="${y}" rx="${5*s}" ry="${10*s}" transform="rotate(${r} ${x} ${y})"/>`).join("");
+  return `<svg class="deco" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+    <defs><radialGradient id="gl" cx="270" cy="40" r="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="${t.glow}"/><stop offset="1" stop-color="${t.glow}" stop-opacity="0"/></radialGradient></defs>
+    <rect width="${W}" height="${H}" fill="url(#gl)"/>
+    ${rays}
+    <g fill="${t.petal}" opacity="${t.petalOp}">${p}</g>
+    <rect x="16" y="16" width="${W-32}" height="${H-32}" rx="4" fill="none" stroke="${t.frame}" stroke-width="1.5"/>
+    <rect x="22" y="22" width="${W-44}" height="${H-44}" rx="2" fill="none" stroke="${t.frame}" stroke-width=".8" opacity=".55"/>
+    ${corner("")}${corner(`translate(${W},0) scale(-1,1)`)}${corner(`translate(0,${H}) scale(1,-1)`)}${corner(`translate(${W},${H}) scale(-1,-1)`)}
+  </svg>`;
+}
+
+function render(){
+  const t = THEMES[theme], v = k => esc($("f_"+k).value.trim());
+  const card = $("card");
+  Object.entries({bg:t.bg,accent:t.accent,title:t.title,ink:t.ink,label:t.label,line:t.line,panel:t.panel,pborder:t.pborder,frame:t.frame})
+    .forEach(([k,val]) => card.style.setProperty("--c-"+k, val));
+  card.innerHTML = deco(t) + `
+    <div class="inner">
+      ${lotus(t)}
+      <div class="c-greet">धन निरंकार जी</div>
+      <div class="c-date"><i></i><span>${v("date")}</span><i></i></div>
+      <div class="c-title">${v("title")}</div>
+      <div class="c-panel c-info">
+        <div class="c-k">समय</div><div class="c-v">${v("time")}</div>
+        <div class="c-sep"></div>
+        <div class="c-k">स्थान</div><div class="c-addr">${v("place")}</div>
+      </div>
+      <div class="c-panel c-sewa">
+        <div class="c-r"><span class="l">मंच संचालन</span><span class="d"></span><span class="v">${v("manch")}</span></div>
+        <div class="c-r"><span class="l">स्टेज से विचार</span><span class="d"></span><span class="v">${v("vichar")}</span></div>
+        <div class="c-r"><span class="l">प्रसाद सेवा</span><span class="d"></span><span class="v">${v("prasad")}</span></div>
+        <div class="c-r"><span class="l">Sewadl PT परेड</span><span class="d"></span><span class="v">${v("pt")}</span></div>
+      </div>
+      <div class="c-foot">
+        <div class="c-appeal">${v("appeal")} 🙏🏻</div>
+        <div class="c-close">🌹 धन निरंकार जी 🌹</div>
+        <div class="c-hint">Location link नीचे संदेश में</div>
+      </div>
+    </div>`;
+  try { const s={theme}; F.forEach(k=>s[k]=$("f_"+k).value); localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){}
+}
+
+function buildPicker(){
+  $("tgrid").innerHTML = Object.entries(THEMES).map(([id,t]) =>
+    `<button class="tbtn" data-id="${id}" aria-pressed="${id===theme}">
+       <span class="sw" style="background:${t.bg}"><i style="border-color:${t.frame}"></i><b style="color:${t.accent}">धन निरंकार</b></span>
+       <span>${t.name}</span></button>`).join("");
+  $("tgrid").querySelectorAll(".tbtn").forEach(b => b.onclick = () => {
+    theme = b.dataset.id;
+    $("tgrid").querySelectorAll(".tbtn").forEach(x => x.setAttribute("aria-pressed", x===b));
+    render();
+  });
+}
+
+function fit(){
+  const w = $("stage").clientWidth, s = Math.min(1, w/540);
+  $("fit").style.transform = `scale(${s})`;
+  $("fit").style.marginRight = (540*s - 540) + "px";
+  $("stage").style.height = (675*s) + "px";
+}
+
+function toast(m){ $("toast").textContent = m; clearTimeout(toast.t); toast.t = setTimeout(()=>$("toast").textContent="", 3000); }
+
+async function toCanvas(){
+  await document.fonts.ready;
+  const fitEl=$("fit"), prev=fitEl.style.transform;
+  fitEl.style.transform="none";
+  try { return await html2canvas($("card"), { scale:2, backgroundColor:null, useCORS:true, logging:false }); }
+  finally { fitEl.style.transform=prev; }
+}
+
+$("dl").onclick = async () => {
+  try {
+    const c = await toCanvas();
+    const a = document.createElement("a");
+    a.download = "sangat-" + $("f_date").value.trim().replace(/\s+/g,"-") + "-" + theme + ".png";
+    a.href = c.toDataURL("image/png"); a.click();
+    toast("Image downloaded");
+  } catch(e){ toast("Could not create image: " + e.message); }
+};
+
+function caption(){
+  const v = k => $("f_"+k).value.trim();
+  return `🌹 *धन निरंकार जी* 🙏\n\n*${v("date")}*\n*${v("title")}*\n${v("time")}\n\n*Location*\n${v("map")}\n\n_${v("appeal")}_ 🙏🏻\n\n🌹 *धन निरंकार जी* 🌹`;
+}
+$("cp").onclick = async () => {
+  const text = caption();
+  try { await navigator.clipboard.writeText(text); toast("Caption copied. Paste it with the image."); }
+  catch(e){ toast("Copy blocked by the browser"); }
+};
+
+$("sh").onclick = async () => {
+  const text = caption();
+  try {
+    const c = await toCanvas();
+    const blob = await new Promise(r => c.toBlob(r, "image/png"));
+    const file = new File([blob], "sangat-" + theme + ".png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files:[file] })) {
+      try { await navigator.clipboard.writeText(text); } catch(e){}
+      await navigator.share({ files:[file], text });
+      toast("Shared. If the caption is missing, paste it — it is already copied.");
+      return;
+    }
+    // Fallback: save the image, copy the caption, open WhatsApp with the caption ready.
+    const a = document.createElement("a"); a.download = file.name; a.href = URL.createObjectURL(blob); a.click();
+    try { await navigator.clipboard.writeText(text); } catch(e){}
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+    toast("Image saved and caption copied. In WhatsApp, attach the image and paste the caption.");
+  } catch(e){ if (e.name !== "AbortError") toast("Could not share: " + e.message); }
+};
+
+try { const s = JSON.parse(localStorage.getItem(KEY) || "{}");
+  if (s.theme && THEMES[s.theme]) theme = s.theme;
+  F.forEach(k => { if (s[k] != null) $("f_"+k).value = s[k]; }); } catch(e){}
+const qp = new URLSearchParams(location.search);
+if (qp.get("t") && THEMES[qp.get("t")]) theme = qp.get("t");
+
+buildPicker();
+document.querySelectorAll(".form input,.form textarea").forEach(el => el.addEventListener("input", render));
+render(); fit(); addEventListener("resize", fit);
+
+/* ?export=1 renders the exported PNG in-page (used to verify the download output). */
+if (qp.get("export")) toCanvas().then(c => { document.body.innerHTML=""; const i=new Image(); i.src=c.toDataURL(); i.style.width="540px"; document.body.appendChild(i); });
+</script>
+</body>
+</html>
