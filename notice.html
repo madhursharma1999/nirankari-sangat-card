@@ -249,10 +249,11 @@ function placeBlock(l){
   return out;
 }
 function sevaLines(s, vicharIcon, withPrasad){
-  const L = [], a = person(s.sanchalan), b = person(s.vichar), c = withPrasad ? person(s.prasad) : "";
-  if (a) L.push(`🎤 *मंच संचालन:* ${a}`);
-  if (b) L.push(`${vicharIcon} *स्टेज से विचार:* ${b}`);
-  if (c) L.push(`🙏 *${s.prasadType || "प्रसाद सेवा"}:* ${c}`);
+  // an empty name keeps the line, just left blank after the label
+  const BLANK = "", L = [];
+  L.push(`🎤 *मंच संचालन:* ${person(s.sanchalan) || BLANK}`);
+  L.push(`${vicharIcon} *स्टेज से विचार:* ${person(s.vichar) || BLANK}`);
+  if (withPrasad) L.push(`🙏 *${s.prasadType || "प्रसाद सेवा"}:* ${person(s.prasad) || BLANK}`);
   return L;
 }
 
@@ -534,7 +535,7 @@ function specialHTML(){
         ${fld("प्रसाद / लंगर सेवा", segCtl(b+".prasadType", ["प्रसाद सेवा","लंगर प्रसाद सेवा"]) + `<div class="mt8">${personCtl(b+".prasad")}</div>`)}
         ${fld("स्थान", placeCtl(b+".loc"))}
         ${fld("संदेश में स्थान का नाम", `<input data-path="${b}.bhawan" placeholder="जैसे: साई कुंज भवन" value="${esc(sp.bhawan)}"><p class="hint mt8">“… ${esc(sp.bhawan || "साई कुंज भवन")} में पधारकर …”</p>`)}
-        <p class="hint">जो नाम खाली छोड़ेंगे, वह पंक्ति संदेश में नहीं आएगी।</p>
+        <p class="hint">जो नाम खाली छोड़ेंगे, वह पंक्ति संदेश में खाली रहेगी — बाद में भर सकते हैं।</p>
       </div>
     </section>
     ${textsHTML([["sclosing",4]])}`;
