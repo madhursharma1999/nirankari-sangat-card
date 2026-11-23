@@ -97,8 +97,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .ib.del:hover{color:var(--danger)}
 .cb{padding:16px;display:grid;gap:18px}
 .opt{border-top:1px solid var(--line);padding-top:16px}
-.opt .lbl .link{color:var(--muted);font-weight:500}
-.opt .lbl .link:hover{color:var(--danger)}
+.opt .lbl .link,.lbl .link.rmv{color:var(--muted);font-weight:500}
+.opt .lbl .link:hover,.lbl .link.rmv:hover{color:var(--danger)}
 .presets{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding-top:16px}
 .chip{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--field);background:transparent;font-size:13px;color:var(--ink);cursor:pointer}
@@ -251,8 +251,8 @@ function placeBlock(l){
 function sevaLines(s, vicharIcon, withPrasad){
   // an empty name keeps the line, just left blank after the label
   const BLANK = "", L = [];
-  L.push(`🎤 *मंच संचालन:* ${person(s.sanchalan) || BLANK}`);
-  L.push(`${vicharIcon} *स्टेज से विचार:* ${person(s.vichar) || BLANK}`);
+  if (s.sanchalanOn !== false) L.push(`🎤 *मंच संचालन:* ${person(s.sanchalan) || BLANK}`);
+  if (s.vicharOn !== false) L.push(`${vicharIcon} *स्टेज से विचार:* ${person(s.vichar) || BLANK}`);
   if (withPrasad) L.push(`🙏 *${s.prasadType || "प्रसाद सेवा"}:* ${person(s.prasad) || BLANK}`);
   return L;
 }
@@ -299,7 +299,7 @@ function buildSpecial(st){
   if (d) L.push(`*दिनांक :* ${dateS(sp.date)}`);
   const tt = timeS(sp.start, sp.end); if (tt) L.push(`*समय :* ${tt}`);
   const ln = sp.langarNote ? txt(sp.langarText, LANGAR_NOTE) : ""; if (ln) L.push("", ln);
-  L.push("", ...sevaLines(sp, "🌹", true), "");
+  L.push("", ...sevaLines(sp, "🌹", sp.prasadOn !== false), "");
   const a = addrLines(sp.loc.place);
   if (a.length) L.push(`*स्थान :* ${a[0]}`, ...a.slice(1));
   if ((sp.loc.map||"").trim()) L.push(`*लोकेशन :* ${sp.loc.map.trim()}`);
@@ -331,12 +331,14 @@ const newSangat = () => ({
   name:"सुबह की सत्संग", nameCustom:false, date:todayISO(), start:"07:30", end:"08:30",
   sanchalan:P("महात्मा","नीरज"), vichar:P("महात्मा","विवेक"),
   prasadOn:false, prasadType:"प्रसाद सेवा", prasad:P("बहन","संध्या मिश्रा"),
+  sanchalanOn:true, vicharOn:true,
   ptOn:false, ptStart:"07:00", ptEnd:"07:15",
   noteOn:false, note:"", contactOn:false, contact:{ title:"महात्मा", name:"", phone:"" },
   ownPlace:false, loc:loc0() });
 const newSpecial = () => ({
   visitor:P("महात्मा",""), date:todayISO(), start:"10:00", end:"12:00", langarNote:true,
   sanchalan:P("महात्मा","नीरज"), vichar:P("महात्मा","विवेक"),
+  sanchalanOn:true, vicharOn:true, prasadOn:true,
   prasadType:"लंगर प्रसाद सेवा", prasad:P("बहन","संध्या मिश्रा"),
   loc:loc0(), bhawan:PLACES[0].bhawan });
 // Weekly timetable — what each day's programme looks like by default (0 = रविवार).
@@ -447,12 +449,19 @@ function nameCtl(i){
   return `<select data-namesel="${i}" aria-label="सत्संग का नाम">${NAMES.map(n => `<option${!custom && n===s.name ? " selected" : ""}>${esc(n)}</option>`).join("")}<option value="__new"${custom ? " selected" : ""}>✎ अपना नाम लिखें…</option></select>`
     + (custom ? `<input class="mt8" data-path="sangats.${i}.name" placeholder="सत्संग का नाम लिखें" value="${esc(s.name)}">` : "");
 }
+const fldRm = (onPath, label, ctl) => fld(`<span>${label}</span><button type="button" class="link rmv" data-toggle="${onPath}">हटाएँ</button>`, ctl);
+// मंच संचालन + स्टेज से विचार, each removable
+function stageFields(b, o){
+  const f = [o.sanchalanOn !== false ? fldRm(b+".sanchalanOn", "मंच संचालन", personCtl(b+".sanchalan")) : "",
+             o.vicharOn !== false ? fldRm(b+".vicharOn", "स्टेज से विचार", personCtl(b+".vichar")) : ""].filter(Boolean);
+  return f.join("");                                  // one below the other
+}
 const opt = (onPath, label, body) =>
   `<div class="opt"><div class="lbl"><span>${label}</span><button type="button" class="link" data-toggle="${onPath}">हटाएँ</button></div>${body}</div>`;
 
 function cardHTML(s, i, n){
   const b = `sangats.${i}`;
-  const chips = [["prasadOn","+ प्रसाद / लंगर सेवा"],["ptOn","+ सेवादल PT परेड"],["noteOn","+ नोट"],["contactOn","+ संपर्क"],["ownPlace","+ अलग स्थान"]]
+  const chips = [["sanchalanOn","+ मंच संचालन"],["vicharOn","+ स्टेज से विचार"],["prasadOn","+ प्रसाद / लंगर सेवा"],["ptOn","+ सेवादल PT परेड"],["noteOn","+ नोट"],["contactOn","+ संपर्क"],["ownPlace","+ अलग स्थान"]]
     .filter(([k]) => !s[k]).map(([k,l]) => `<button type="button" class="chip" data-toggle="${b}.${k}">${l}</button>`).join("");
   return `<article class="card">
     <header class="ch">
@@ -465,7 +474,7 @@ function cardHTML(s, i, n){
     <div class="cb">
       <div class="g2">${fld("सत्संग का नाम", nameCtl(i))}${fld("दिनांक", dateCtl(b+".date"))}</div>
       ${fld("समय", timePair(b+".start", b+".end"))}
-      <div class="g2">${fld("मंच संचालन", personCtl(b+".sanchalan"))}${fld("स्टेज से विचार", personCtl(b+".vichar"))}</div>
+      ${stageFields(b, s)}
       ${s.prasadOn ? opt(b+".prasadOn", "प्रसाद / लंगर सेवा", segCtl(b+".prasadType", ["प्रसाद सेवा","लंगर प्रसाद सेवा"]) + `<div class="mt8">${personCtl(b+".prasad")}</div>`) : ""}
       ${s.ptOn ? opt(b+".ptOn", "सेवादल PT परेड", timePair(b+".ptStart", b+".ptEnd")) : ""}
       ${s.noteOn ? opt(b+".noteOn", "नोट", `<textarea data-path="${b}.note" rows="2" placeholder="कोई विशेष सूचना">${esc(s.note)}</textarea>
@@ -531,8 +540,10 @@ function specialHTML(){
               `<textarea data-path="${b}.langarText" rows="2">${esc(sp.langarText ?? LANGAR_NOTE)}</textarea>
                <div class="presets">${sp.langarText != null && sp.langarText !== LANGAR_NOTE ? `<button type="button" class="link" data-preset="${b}.langarText" data-val="langarS">मूल पाठ पर लौटाएँ</button>` : `<span>समय के ठीक नीचे आएगी। चाहें तो शब्द बदल सकते हैं।</span>`}</div>`)
           : `<div class="chips"><button type="button" class="chip" data-toggle="${b}.langarNote">+ लंगर की सूचना जोड़ें</button><span class="hint" style="align-self:center">“सत्संग के पश्चात … लंगर प्रसाद की व्यवस्था भी रहेगी जी।”</span></div>`}
-        <div class="g2">${fld("मंच संचालन", personCtl(b+".sanchalan"))}${fld("स्टेज से विचार", personCtl(b+".vichar"))}</div>
-        ${fld("प्रसाद / लंगर सेवा", segCtl(b+".prasadType", ["प्रसाद सेवा","लंगर प्रसाद सेवा"]) + `<div class="mt8">${personCtl(b+".prasad")}</div>`)}
+        ${stageFields(b, sp)}
+        ${sp.prasadOn !== false ? fldRm(b+".prasadOn", "प्रसाद / लंगर सेवा", segCtl(b+".prasadType", ["प्रसाद सेवा","लंगर प्रसाद सेवा"]) + `<div class="mt8">${personCtl(b+".prasad")}</div>`) : ""}
+        ${(() => { const c = [["sanchalanOn","+ मंच संचालन"],["vicharOn","+ स्टेज से विचार"],["prasadOn","+ प्रसाद / लंगर सेवा"]].filter(([k]) => sp[k] === false)
+            .map(([k,l]) => `<button type="button" class="chip" data-toggle="${b}.${k}">${l}</button>`).join(""); return c ? `<div class="chips">${c}</div>` : ""; })()}
         ${fld("स्थान", placeCtl(b+".loc"))}
         ${fld("संदेश में स्थान का नाम", `<input data-path="${b}.bhawan" placeholder="जैसे: साई कुंज भवन" value="${esc(sp.bhawan)}"><p class="hint mt8">“… ${esc(sp.bhawan || "साई कुंज भवन")} में पधारकर …”</p>`)}
         <p class="hint">जो नाम खाली छोड़ेंगे, वह पंक्ति संदेश में खाली रहेगी — बाद में भर सकते हैं।</p>
@@ -663,7 +674,7 @@ document.addEventListener("click", e => {
     const p = t.dataset.toggle, on = !getP(state, p); setP(state, p, on);
     if (on && p.endsWith(".ownPlace")) getP(state, p.slice(0, -9)).loc = { place:"", map:"", custom:true };
     render();
-    if (on){ const k = p.split(".").pop(); const f = { langarNote:".langarText", prasadOn:".prasad.name", contactOn:".contact.name", noteOn:".note", ownPlace:".loc.place" }[k];
+    if (on){ const k = p.split(".").pop(); const f = { sanchalanOn:".sanchalan.name", vicharOn:".vichar.name", langarNote:".langarText", prasadOn:".prasad.name", contactOn:".contact.name", noteOn:".note", ownPlace:".loc.place" }[k];
       if (f) document.querySelector(`[data-path="${p.slice(0, -k.length-1)}${f}"]`)?.focus(); }
     return;
   }
