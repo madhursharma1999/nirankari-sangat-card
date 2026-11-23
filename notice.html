@@ -259,7 +259,7 @@ function sevaLines(s, vicharIcon, withPrasad){
 
 function buildRegular(st){
   const T = st.text || {}, list = st.sangats, multi = list.length > 1;
-  const sharedDate = multi && list[0].date && list.every(s => s.date === list[0].date);
+  const sharedDate = list[0].date && list.every(s => s.date === list[0].date);   // one day → date banner at the top (even for a single sangat)
   const locs = list.map(s => locOf(s, st));
   const oneLoc = locs.every(l => locKey(l) === locKey(locs[0]));
   const L = ["🌹 🙏 *धन निरंकार जी* 🙏🌹", ""];
