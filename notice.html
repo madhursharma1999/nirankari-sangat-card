@@ -7,510 +7,725 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f2ed;--panel:#fff;--ink:#26221e;--muted:#80766d;--line:#ebe5da;--field:#ddd5c8;--accent:#8a5a14;--accentInk:#fff;--accentSoft:#f6eddc;
-  --chat:#e9e2d6;--bubble:#ffffff;--wa:#1f8f4e;--link:#1a6fb5;--danger:#b23b3b}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#171513;--panel:#221f1b;--ink:#f1ebe2;--muted:#a99d90;--line:#332d27;--field:#453d35;--accent:#d6a650;--accentInk:#171513;--accentSoft:#3a2f1f;
-  --chat:#121b1f;--bubble:#1f2c33;--wa:#25a35a;--link:#5fb0f0;--danger:#e07070}}
-:root[data-theme="dark"]{--bg:#171513;--panel:#221f1b;--ink:#f1ebe2;--muted:#a99d90;--line:#332d27;--field:#453d35;--accent:#d6a650;--accentInk:#171513;--accentSoft:#3a2f1f;
-  --chat:#121b1f;--bubble:#1f2c33;--wa:#25a35a;--link:#5fb0f0;--danger:#e07070}
+:root{--bg:#f6f5f2;--panel:#fff;--ink:#1d1b19;--muted:#6f6962;--line:#e7e3dd;--field:#d8d3cc;--accent:#7b2d26;--accentInk:#fff;--soft:#f3f1ed;
+  --chat:#ece5dd;--bubble:#fff;--wa:#1f8f4e;--link:#1a6fb5;--danger:#b23b3b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#141312;--panel:#1c1b19;--ink:#eeeae4;--muted:#a39b92;--line:#2d2a27;--field:#3f3b37;--accent:#e3a59b;--accentInk:#1a1210;--soft:#252320;
+  --chat:#0f1a1f;--bubble:#1f2c33;--wa:#25a35a;--link:#6cb6f2;--danger:#e07070}}
+:root[data-theme="dark"]{--bg:#141312;--panel:#1c1b19;--ink:#eeeae4;--muted:#a39b92;--line:#2d2a27;--field:#3f3b37;--accent:#e3a59b;--accentInk:#1a1210;--soft:#252320;
+  --chat:#0f1a1f;--bubble:#1f2c33;--wa:#25a35a;--link:#6cb6f2;--danger:#e07070}
 
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Devanagari",system-ui,sans-serif;font-size:15px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Devanagari",system-ui,sans-serif;font-size:15px;line-height:1.5}
 button{font:inherit;color:inherit}
-.app{max-width:1140px;margin:0 auto;padding:28px 16px 48px;display:grid;gap:24px 28px;grid-template-columns:minmax(0,1fr) minmax(0,420px);align-items:start}
-@media (max-width:900px){.app{grid-template-columns:minmax(0,1fr);padding-bottom:110px}}
-.head{grid-column:1/-1}
-h1{font-size:22px;margin:0;line-height:1.3}
+.app{max-width:1120px;margin:0 auto;padding:32px 16px 56px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:24px 32px;align-items:start}
+
+/* header */
+.top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--line)}
+h1{font-size:22px;font-weight:700;margin:0;line-height:1.3}
 .sub{color:var(--muted);font-size:13.5px;margin:2px 0 0}
-.col{display:grid;gap:16px;min-width:0}
-.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
-.boxhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.sec{font-size:12px;font-weight:700;color:var(--muted);margin:0;letter-spacing:.5px;text-transform:uppercase}
+.tabs{display:none;grid-column:1/-1}
+.modes{grid-column:1/-1;justify-self:center;width:min(620px,100%);display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--soft);border:1px solid var(--line);border-radius:14px}
+.modes button{border:0;background:transparent;border-radius:10px;padding:10px 12px;cursor:pointer;display:grid;gap:1px;text-align:center}
+.modes button:hover:not([aria-pressed="true"]){background:var(--panel)}
+.modes b{font-size:15.5px;font-weight:700}
+.modes small{font-size:12px;color:var(--muted)}
+.modes button[aria-pressed="true"]{background:var(--accent);color:var(--accentInk);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.modes button[aria-pressed="true"] small{color:inherit;opacity:.85}
 
-/* controls — one height everywhere */
-input,select,textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--panel);border:1px solid var(--field);border-radius:10px}
-input,select{height:42px;padding:0 12px;width:100%}
-textarea{width:100%;padding:10px 12px;line-height:1.5;resize:vertical;min-height:64px}
+/* sections */
+.col{display:grid;gap:28px;min-width:0}
+.sec{display:grid;gap:12px;min-width:0}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+h2{font-size:13px;font-weight:600;color:var(--muted);margin:0}
+.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;container:box/inline-size}
+.panel{padding:18px;display:grid;gap:18px}
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 16px}
+@container box (max-width:620px){ .g2{grid-template-columns:minmax(0,1fr)} }
+.lbl{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.hint{font-size:12.5px;color:var(--muted);margin:0;line-height:1.5}
+.mt8{margin-top:8px}
+
+/* controls */
+input,select,textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--panel);border:1px solid var(--field);border-radius:8px}
+input,select{height:40px;padding:0 12px;width:100%}
+textarea{width:100%;padding:9px 12px;line-height:1.55;resize:vertical;display:block}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
-::placeholder{color:var(--muted);opacity:.8}
-
-/* field rows: label | control */
-.f{display:grid;grid-template-columns:168px minmax(0,1fr);gap:8px 16px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
-.f:first-child{border-top:0;padding-top:2px}
-.f.top{align-items:start}
-.f.top .fl{min-height:42px}
-.fl{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;line-height:1.3}
-.fl .ico{width:22px;flex:none;text-align:center;font-size:17px}
-.fl small{display:block;font-size:11.5px;font-weight:500;color:var(--muted)}
-.sangat{container:card/inline-size}
-@container card (max-width:520px){ .f{grid-template-columns:minmax(0,1fr)} .f.top .fl{padding-top:0} }
-
-/* date row */
-.daterow{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:12px;align-items:center}
-.datehi{font-weight:600;color:var(--accent)}
-@media (max-width:520px){.daterow{grid-template-columns:minmax(0,1fr)}}
-
-/* time */
-.tpair{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
-.tp{display:inline-flex;align-items:center;gap:6px}
-.tbox{display:inline-flex;align-items:center;height:42px;border:1px solid var(--field);border-radius:10px;background:var(--panel);padding:0 6px}
-.tbox:focus-within{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
-.tbox select{border:0;height:40px;width:auto;min-width:38px;padding:0 4px;font-size:16px;font-weight:600;background:transparent;-webkit-appearance:none;appearance:none;text-align:center;text-align-last:center;cursor:pointer}
-.tbox select:focus{outline:none}
-.tbox b{color:var(--muted);font-weight:600}
-.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;height:42px;border:1px solid var(--field);border-radius:10px;overflow:hidden;background:var(--panel);flex:none}
+::placeholder{color:var(--muted);opacity:.75}
+.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;height:40px;border:1px solid var(--field);border-radius:8px;overflow:hidden;background:var(--panel);flex:none}
 .seg button{border:0;background:transparent;padding:0 12px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
 .seg button+button{border-left:1px solid var(--field)}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accentInk)}
-.seg.ap{width:84px}
-.seg.kind{height:36px}
-.seg.kind button{padding:0 14px}
-.tsep{font-size:13px;color:var(--muted);font-weight:600;width:20px}
-.tpair{gap:8px 18px}
-.clear{border:0;background:none;color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;padding:4px 2px;text-decoration:underline;text-underline-offset:2px}
+.link{background:none;border:0;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer;padding:0}
+.link:hover{text-decoration:underline}
 
-/* person */
+.dt{display:grid;gap:4px}
+.dhint{font-size:12.5px;color:var(--accent);font-weight:600;min-height:19px}
+
+.tpair{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px}
+.tp{display:inline-flex;align-items:center;gap:6px}
+.tbox{display:inline-flex;align-items:center;height:40px;border:1px solid var(--field);border-radius:8px;background:var(--panel);padding:0 6px}
+.tbox:focus-within{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+.tbox select{border:0;height:38px;width:auto;min-width:36px;padding:0 4px;font-size:15.5px;font-weight:600;background:transparent;-webkit-appearance:none;appearance:none;text-align:center;text-align-last:center;cursor:pointer}
+.tbox select:focus{outline:none}
+.tbox b{color:var(--muted);font-weight:600}
+.seg.ap{width:82px}
+.seg.ap button{padding:0 6px}
+.tsep{font-size:13px;color:var(--muted);font-weight:600;min-width:18px}
+
 .pf{display:flex;gap:8px}
 .pf input{flex:1;min-width:0}
 
-/* place */
-.placebox{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--accentSoft);font-size:13.5px;line-height:1.5}
-.placebox a,.placebox .nomap{display:block;margin-top:3px;font-size:12.5px;color:var(--link);word-break:break-all;text-decoration:none}
-.placebox .nomap{color:var(--muted)}
-.mt8{margin-top:8px}
-.maprow{display:flex;align-items:center;gap:8px;margin-top:8px}
+.addr{white-space:pre-line;font-size:13.5px;line-height:1.55;padding:10px 12px;border-radius:8px;background:var(--soft);margin-top:8px}
+.place textarea{margin-top:8px}
+.maprow{display:flex;align-items:center;gap:10px;margin-top:8px}
 .maprow input{flex:1;min-width:0;font-size:14px}
-.mapico{font-size:16px;width:22px;text-align:center;flex:none}
-.mapopen{flex:none;font-size:13px;font-weight:600;color:var(--link);text-decoration:none;white-space:nowrap}
+.open{flex:none;font-size:13px;font-weight:600;color:var(--link);text-decoration:none;white-space:nowrap}
+.check{display:flex;align-items:center;gap:10px;height:40px;font-size:14px;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--accent);margin:0}
 
 /* sangat cards */
-.sangat{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
-.sangat+.sangat{margin-top:12px}
-.shead{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--accentSoft);cursor:default}
-.snum{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accentInk);font-weight:700;font-size:13px;display:grid;place-items:center;flex:none}
-.sinfo{flex:1;min-width:0}
-.stitle{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ssum{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sact{display:flex;gap:4px;flex:none}
-.ibtn{width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;display:grid;place-items:center}
-.ibtn:hover:not(:disabled){background:var(--panel);border-color:var(--line);color:var(--ink)}
-.ibtn:disabled{opacity:.3;cursor:default}
-.ibtn.del:hover:not(:disabled){color:var(--danger)}
-.chev{transition:transform .15s}
-.sangat.closed .chev{transform:rotate(-90deg)}
-.sbody{padding:6px 16px 6px}
-.sangat.closed .sbody{display:none}
-.single .chev,.single .sact .mv,.single .sact .del{display:none}
-.tsep{margin-left:2px}
+.cards{display:grid;gap:12px}
+.card{overflow:hidden}
+.ch{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.cn{width:22px;height:22px;border-radius:50%;border:1px solid var(--field);font-size:12px;font-weight:600;color:var(--muted);display:grid;place-items:center;flex:none}
+.ct{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
+.cs{flex:1;min-width:0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acts{display:flex;gap:2px;flex:none}
+.ib{width:30px;height:30px;border-radius:6px;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;display:grid;place-items:center}
+.ib:hover:not(:disabled){background:var(--soft);color:var(--ink)}
+.ib:disabled{opacity:.3;cursor:default}
+.ib.del:hover{color:var(--danger)}
+.cb{padding:16px;display:grid;gap:18px}
+.opt{border-top:1px solid var(--line);padding-top:16px}
+.opt .lbl .link{color:var(--muted);font-weight:500}
+.opt .lbl .link:hover{color:var(--danger)}
+.presets{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding-top:16px}
+.chip{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--field);background:transparent;font-size:13px;color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.add{height:44px;border-radius:12px;border:1px dashed var(--field);background:transparent;font-weight:600;font-size:14px;cursor:pointer}
+.add:hover{border-color:var(--accent);color:var(--accent)}
 
-.add{width:100%;margin-top:12px;height:46px;border-radius:12px;border:1.5px dashed var(--accent);background:transparent;color:var(--accent);font-weight:600;font-size:14.5px;cursor:pointer}
-.add:hover{background:var(--accentSoft)}
-.link{background:none;border:0;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:0}
-.hint{font-size:12.5px;color:var(--muted);margin:10px 0 0;line-height:1.5}
+.sdesc{font-size:12.5px;color:var(--muted);margin:-6px 0 0;line-height:1.5}
+.tlist{padding:0;gap:0}
+.trow{padding:14px 18px;border-top:1px solid var(--line)}
+.trow:first-child{border-top:0}
+.thead{display:flex;align-items:flex-start;gap:12px}
+.tinfo{flex:1;min-width:0}
+.tchk{width:18px;height:18px;margin:2px 0 0;flex:none;accent-color:var(--accent);cursor:pointer}
+.trow.off .tname{color:var(--muted)}
+.tedit{padding-left:30px}
+.tname{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.twhere{font-size:12px;color:var(--muted);margin-top:1px}
+.tsnip{font-size:13px;color:var(--muted);margin-top:6px;padding-left:10px;border-left:2px solid var(--line);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tsnip.empty{font-style:italic}
+.badge{font-size:11px;font-weight:600;color:var(--accent);border:1px solid currentColor;border-radius:999px;padding:0 7px;line-height:18px}
+.tbtn{flex:none;height:32px;padding:0 14px;border-radius:8px;border:1px solid var(--field);background:var(--panel);font-size:13px;font-weight:600;cursor:pointer}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+.tedit{margin-top:10px}
+.tfoot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
 
 /* output */
-.out{position:sticky;top:20px}
-@media (max-width:900px){.out{position:static}}
-.chat{background:var(--chat);border-radius:14px;padding:14px;max-height:66vh;overflow:auto}
-@media (max-width:900px){.chat{max-height:none}}
-.bubble{background:var(--bubble);border-radius:10px;padding:10px 12px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.out{position:sticky;top:24px;display:grid;gap:12px;min-width:0}
+.chat{background:var(--chat);border-radius:12px;padding:12px;max-height:calc(100vh - 210px);overflow:auto}
+.bubble{background:var(--bubble);border-radius:8px;padding:10px 12px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 1px rgba(0,0,0,.08)}
 .bubble a{color:var(--link)}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.btn{font-weight:600;font-size:14.5px;height:46px;border-radius:12px;cursor:pointer;border:1px solid var(--accent);background:var(--panel);color:var(--accent)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{font-weight:600;font-size:14.5px;height:44px;border-radius:10px;cursor:pointer;border:1px solid var(--field);background:var(--panel)}
 .btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}
-.toast{font-size:13px;color:var(--muted);min-height:20px;margin-top:8px;text-align:center}
+.toast{font-size:13px;color:var(--muted);min-height:20px;text-align:center}
 .mbar{display:none}
+
 @media (max-width:900px){
-  .mbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--panel);border-top:1px solid var(--line);z-index:5}
+  .app{grid-template-columns:minmax(0,1fr);padding:20px 16px 110px;gap:16px}
+  .top{padding-bottom:16px}
+  .tabs{display:block;position:sticky;top:0;z-index:4;background:var(--bg);padding:8px 0}
+  .tabs .seg{width:100%;background:var(--soft);border-color:var(--line);padding:3px;height:42px;border-radius:10px}
+  .tabs .seg button{border:0!important;border-radius:7px}
+  .tabs .seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+  body:not([data-view="preview"]) .out{display:none}
+  body[data-view="preview"] #form{display:none}
+  .out{position:static}
+  .chat{max-height:none}
   .out .actions{display:none}
+  .mbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--panel);border-top:1px solid var(--line);z-index:5}
 }
+@media (max-width:420px){ .modes button{padding:9px 6px} .modes small{font-size:11px} }
 </style>
 </head>
 <body>
-<div class="app" id="app">
-  <div class="head">
-    <h1>🌸 सादर सूचना</h1>
-    <p class="sub">Fill in the sangat details. The WhatsApp message is written for you.</p>
+<div class="app">
+  <header class="top">
+    <div>
+      <h1>सत्संग सूचना</h1>
+      <p class="sub">विवरण भरें — WhatsApp संदेश अपने-आप तैयार होगा।</p>
+    </div>
+  </header>
+  <nav class="modes" id="modes" aria-label="सूचना का प्रकार">
+    <button type="button" data-mode="regular"><b>साधारण सूचना</b><small>एक या अधिक सत्संग का कार्यक्रम</small></button>
+    <button type="button" data-mode="special"><b>विशेष सत्संग</b><small>महात्मा जी के पधारने की सूचना</small></button>
+  </nav>
+  <div class="tabs">
+    <div class="seg" id="views">
+      <button type="button" data-view="edit">विवरण भरें</button>
+      <button type="button" data-view="preview">संदेश देखें</button>
+    </div>
   </div>
 
-  <div class="col">
-    <section class="box">
-      <div class="boxhead"><p class="sec">📅 दिनाँक</p></div>
-      <div class="daterow">
-        <input type="date" id="date" aria-label="दिनाँक">
-        <div class="datehi" id="dateText"></div>
-      </div>
-    </section>
+  <div class="col" id="form"></div>
 
-    <section class="box">
-      <div class="boxhead"><p class="sec">संगत</p><button class="link" id="reset">↺ डिफ़ॉल्ट पर लौटाएँ</button></div>
-      <div id="list"></div>
-      <button class="add" id="add">+ एक और संगत जोड़ें</button>
-      <p class="hint">Sangats one after another at the same स्थान share one place line in the message.</p>
-    </section>
-
-    <section class="box">
-      <div class="boxhead"><p class="sec">🙏🏻 अनुरोध</p><button class="link" id="appealReset" hidden>Automatic पर लौटाएँ</button></div>
-      <textarea id="appeal" rows="3" aria-label="अनुरोध"></textarea>
-      <p class="hint" id="appealHint"></p>
-    </section>
-  </div>
-
-  <div class="out">
-    <section class="box">
-      <div class="boxhead"><p class="sec">WhatsApp संदेश</p></div>
-      <div class="chat"><div class="bubble" id="preview"></div></div>
-      <div class="actions">
-        <button class="btn wa" data-share>Share to WhatsApp</button>
-        <button class="btn" data-copy>Copy message</button>
-      </div>
-      <div class="toast" id="toast" role="status"></div>
-    </section>
-  </div>
+  <aside class="out">
+    <div class="sh"><h2>WhatsApp संदेश</h2></div>
+    <div class="chat"><div class="bubble" id="preview"></div></div>
+    <div class="actions">
+      <button class="btn wa" data-share>Share to WhatsApp</button>
+      <button class="btn" data-copy>Copy message</button>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+  </aside>
 </div>
 <div class="mbar">
   <button class="btn wa" data-share>Share to WhatsApp</button>
   <button class="btn" data-copy>Copy</button>
 </div>
-
 <datalist id="dl-people"></datalist>
 
 <script>
 // GEN-START — pure message builder (no DOM), also used by tests
 const MONTHS = ["जनवरी","फ़रवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितंबर","अक्टूबर","नवंबर","दिसंबर"];
-const DAYS = ["रविवार","सोमवार","मंगलवार","बुधवार","गुरुवार","शुक्रवार","शनिवार"];
-const SHORT = { "English Medium Satsang (EMS)":"EMS", "रविवारीय साप्ताहिक साझा सत्संग":"साझा सत्संग" };
+const DAYS = ["रविवार","सोमवार","मंगलवार","बुधवार","वीरवार","शुक्रवार","शनिवार"];
+const DIV = "━━━━━━━━━━━━━━━━━━";
+const DEF = {
+  intro: "सत्संग वह पावन अवसर है, जहाँ मन को शांति, विचारों को पवित्रता और जीवन को भक्ति की नई दिशा मिलती है। जहाँ सत्संग होता है, वहाँ प्रेम, नम्रता और भक्ति का संचार होता है। सत्संग केवल सुनने का नहीं, बल्कि अपने जीवन को सुंदर विचारों और सद्भावना से सँवारने का अवसर है।",
+  invite: "इसी पावन भावना के साथ आप सभी श्रद्धालु महात्माओं को नीचे दिए गए सत्संग कार्यक्रम में सपरिवार सादर आमंत्रित किया जाता है।",
+  closing: "सत्संग की महिमा तब और बढ़ जाती है, जब हम सब मिलकर एक परिवार की तरह इसमें सम्मिलित होते हैं।\n\nअतः सभी महात्माओं से करबद्ध प्रार्थना है कि अपने परिवारजनों सहित अधिक से अधिक संख्या में पहुँचकर सत्संग कार्यक्रम की शोभा बढ़ाएँ।\n\nआइए, हम सभी मिलकर सतगुरु की शिक्षाओं एवं निरंकार प्रभु की महिमा का गुणगान करें और इस आध्यात्मिक आनंद के सहभागी बनें जी।",
+  sclosing: "आप सभी महात्माओं से विनम्र निवेदन है कि कृपया अपने पूरे परिवार सहित इस सत्संग कार्यक्रम में शामिल होकर सतगुरु की रहमतों एवं आशीर्वाद के पात्र बने जी।"
+};
+const NOTES = {
+  bal: "बाल संगत बच्चों में अच्छे संस्कार, प्रेम, सेवा, सुमिरन और सत्संग की भावना जागृत करने का एक सुंदर प्रयास है।",
+  langarS: "(सत्संग के पश्चात सभी महात्माओं के लिए लंगर प्रसाद की व्यवस्था भी रहेगी जी।)",
+  langar: "🍽️ सत्संग के पश्चात सभी महात्माओं के लिए लंगर प्रसाद की व्यवस्था भी रहेगी जी।"
+};
+const LANGAR_NOTE = "(सत्संग के पश्चात सभी महात्माओं के लिए लंगर प्रसाद की व्यवस्था भी रहेगी जी।)";
 
-function hindiDate(iso){
-  if (!iso) return "";
+function dparts(iso){
+  if (!iso) return null;
   const [y,m,d] = iso.split("-").map(Number);
-  const dow = new Date(Date.UTC(y,m-1,d)).getUTCDay();
-  return `${d} ${MONTHS[m-1]} ${y}, ${DAYS[dow]}`;
+  return { day: DAYS[new Date(y,m-1,d).getDay()], txt: `${d} ${MONTHS[m-1]} ${y}`, short: `${d} ${MONTHS[m-1]}` };
 }
-function period(h){ return h>=4&&h<12 ? "सुबह" : h>=12&&h<16 ? "दोपहर" : h>=16&&h<20 ? "शाम" : "रात"; }
+const dateR = iso => { const p = dparts(iso); return p ? `${p.day}, ${p.txt}` : ""; };   // सोमवार, 23 नवंबर 2026
+const dateS = iso => { const p = dparts(iso); return p ? `${p.txt}, ${p.day}` : ""; };   // 22 नवंबर 2026, रविवार
 function hm(t){ const [h,m] = t.split(":").map(Number); return { h, m, txt:`${h%12||12}:${String(m).padStart(2,"0")}` }; }
-function clock(t){
-  if (!t) return "🕖";
-  const {h,m} = hm(t), h12 = h%12||12;
-  return String.fromCodePoint((m>=30 ? 0x1F55C : 0x1F550) + h12 - 1);
-}
-function timeText(s,e){
-  if (!s) return "";
-  const a = hm(s), pa = period(a.h);
+const perR = h => h>=4&&h<12 ? "प्रात:" : h>=12&&h<16 ? "दोपहर" : h>=16&&h<21 ? "सायं" : "रात्रि";
+const perS = h => h>=4&&h<12 ? "सुबह" : h>=12&&h<16 ? "दोपहर" : h>=16&&h<21 ? "शाम" : "रात";
+// regular: "प्रात: 7:30 बजे से 8:30 बजे तक"   special: "सुबह 10:00 से दोपहर 12:00 बजे तक"
+function timeR(s,e){
+  if (!s) return ""; const a = hm(s), pa = perR(a.h);
   if (!e) return `${pa} ${a.txt} बजे`;
-  const b = hm(e), pb = period(b.h);
-  return pa===pb ? `${pa} ${a.txt} से ${b.txt} बजे तक` : `${pa} ${a.txt} बजे से ${pb} ${b.txt} बजे तक`;
+  const b = hm(e), pb = perR(b.h);
+  return `${pa} ${a.txt} बजे से ${pb!==pa ? pb+" " : ""}${b.txt} बजे तक`;
 }
-function person(p){
-  const n = (p && p.name || "").trim().replace(/\s*जी$/,"");
-  return n ? `आदरणीय ${p.title} ${n} जी` : "";
+function timeS(s,e){
+  if (!s) return ""; const a = hm(s), pa = perS(a.h);
+  if (!e) return `${pa} ${a.txt} बजे`;
+  const b = hm(e), pb = perS(b.h);
+  return `${pa} ${a.txt} से ${pb!==pa ? pb+" " : ""}${b.txt} बजे तक`;
 }
-function joinHindi(a){ return a.length<2 ? a.join("") : a.slice(0,-1).join(", ") + " एवं " + a[a.length-1]; }
-function isBal(s){ return /बाल/.test(s.name||""); }
-function autoAppeal(list){
-  if (list.length<=1) return "सभी महात्माओं से सादर अनुरोध है कि समयानुसार पहुँचकर सत्संग का लाभ प्राप्त करें जी।";
-  return list.some(isBal)
-    ? "सभी महात्माओं एवं बच्चों से सादर अनुरोध है कि निर्धारित समयानुसार पहुँचकर सत्संग एवं बाल संगत का लाभ प्राप्त करें जी।"
-    : "सभी महात्माओं से सादर अनुरोध है कि निर्धारित समयानुसार पहुँचकर सत्संग का लाभ प्राप्त करें जी।";
+function clock(t){ const {h,m} = hm(t||"07:00"); return String.fromCodePoint((m>=30 ? 0x1F55C : 0x1F550) + (h%12||12) - 1); }
+function person(p){ const n = ((p && p.name) || "").trim().replace(/\s*जी$/,""); return n ? `${p.title} ${n} जी` : ""; }
+const txt = (v,d) => (v==null ? d : v).trim();
+const ftext = (st, k) => (st.textOff || {})[k] ? "" : txt((st.text || {})[k], DEF[k]);
+const title = s => (s.name||"").trim() || "सत्संग";
+const flower = s => /सांझी|साँझी/.test(s.name||"") ? "🌺" : "🌼";
+const addrLines = a => (a||"").split(/\n+/).map(x => x.trim()).filter(Boolean);
+const locOf = (s, st) => s.ownPlace && (s.loc.place||"").trim() ? s.loc : st.loc;
+const locKey = l => (l.place||"").trim().replace(/\s+/g," ") + "|" + (l.map||"").trim();
+const tidy = L => L.join("\n").replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim();
+
+function placeBlock(l){
+  const a = addrLines(l.place); if (!a.length) return [];
+  const out = ["📍 *सत्संग स्थल*", ...a];
+  if ((l.map||"").trim()) out.push("", "📌 *Google Map Location:*", l.map.trim());
+  return out;
 }
-function title(s){ return (s.name||"").trim() || "सत्संग"; }
-function shortName(s){ return (s.short||"").trim() || SHORT[title(s)] || title(s); }
+function sevaLines(s, vicharIcon, withPrasad){
+  const L = [], a = person(s.sanchalan), b = person(s.vichar), c = withPrasad ? person(s.prasad) : "";
+  if (a) L.push(`🎤 *मंच संचालन:* ${a}`);
+  if (b) L.push(`${vicharIcon} *स्टेज से विचार:* ${b}`);
+  if (c) L.push(`🙏 *${s.prasadType || "प्रसाद सेवा"}:* ${c}`);
+  return L;
+}
 
-function buildMessage(state){
-  const list = state.sangats, multi = list.length>1, L = [];
-  L.push("🙏🏻 *धन निरंकार जी* 🙏🏻", "", "🌸 *सादर सूचना* 🌸", "");
-  if (state.date) L.push(`*दिनाँक ${hindiDate(state.date)}*`, "");
-
-  // group consecutive sangats that share the same place
-  const groupEnd = new Array(list.length).fill(false), groups = [];
-  let start = 0;
-  for (let i=0;i<list.length;i++){
-    const here = (list[i].place||"").trim(), next = list[i+1] ? (list[i+1].place||"").trim() : null;
-    if (!(next!==null && here && next===here)){ groupEnd[i]=true; groups[i]=list.slice(start,i+1); start=i+1; }
-  }
-
-  if (!multi && (list[0].name||"").trim()) L.push(`*${list[0].name.trim()}*`, "");
-  list.forEach((s,i) => {
-    if (multi){ L.push(`*${i+1}. ${title(s)}*`, ""); }   // bold stops WhatsApp turning it into an indented list
-    const tt = timeText(s.start, s.end);
-    if (tt) L.push(`${clock(s.start)} *समय:* ${tt}`, "");
-    const sv = person(s.seva), sc = person(s.sanchalan);
-    if (sv) L.push(`🙏🏻 *स्टेज सेवा:* ${sv}`);
-    if (sc) L.push(`🙏🏻 *स्टेज संचालन:* ${sc}`);
-    const pr = person(s.prasad);
-    if (pr) L.push(`🙏🏻 *${s.prasadType || "प्रसाद सेवा"}:* ${pr}`);
-    const pt = timeText(s.ptStart, s.ptEnd);
-    if (pt) L.push("", `${clock(s.ptStart)} *सेवादल PT परेड:* ${pt}`);
-    if (groupEnd[i]){
-      const g = groups[i], place = (s.place||"").trim();
-      if (place){
-        const label = multi && g.length>1 ? `स्थान (${joinHindi(g.map(shortName))})` : "स्थान";
-        L.push("", `📍 *${label}:* ${place}`);
-      }
-      const map = (g.map(x => (x.map||"").trim()).find(Boolean)) || "";
-      if (map) L.push("", `🗺️ *लोकेशन:* ${map}`);
+function buildRegular(st){
+  const T = st.text || {}, list = st.sangats, multi = list.length > 1;
+  const sharedDate = multi && list[0].date && list.every(s => s.date === list[0].date);
+  const locs = list.map(s => locOf(s, st));
+  const oneLoc = locs.every(l => locKey(l) === locKey(locs[0]));
+  const L = ["🌹 🙏 *धन निरंकार जी* 🙏🌹", ""];
+  const intro = ftext(st, "intro"); if (intro) L.push(intro, "");
+  const inv = ftext(st, "invite");
+  if (inv) L.push(...inv.split("\n").map(x => x.trim() ? `*${x.trim()}*` : ""), "");
+  L.push(DIV, "");
+  if (sharedDate) L.push(`📅 *दिन:* ${dateR(list[0].date)}`, "", DIV, "");
+  list.forEach((s, i) => {
+    const f = flower(s);
+    L.push(`${f} *${title(s)}* ${f}`, "");
+    if (!sharedDate && s.date) L.push(`📅 *दिन:* ${dateR(s.date)}`);
+    const tt = timeR(s.start, s.end); if (tt) L.push(`⏰ *समय:* ${tt}`);
+    if (s.ptOn && s.ptStart) L.push(`${clock(s.ptStart)} *सेवादल PT परेड:* ${timeR(s.ptStart, s.ptEnd)}`);
+    L.push("", ...sevaLines(s, "🌸", s.prasadOn), "");
+    if (s.noteOn && (s.note||"").trim()) L.push(s.note.trim(), "");
+    if (s.contactOn){
+      const c = person(s.contact), ph = (s.contact.phone||"").trim();
+      if (c || ph) L.push(`📞 *संपर्क:* ${[c, ph].filter(Boolean).join(" – ")}`, "");
     }
-    L.push("");
-    if (multi && i < list.length-1) L.push("┈┈┈┈┈┈┈┈┈┈", "");   // light divider between sangats
+    if (!oneLoc) L.push(...placeBlock(locs[i]), "");
+    L.push(DIV, "");
   });
-
-  const appeal = ((state.appeal||"").trim() || autoAppeal(list)).replace(/^_+|_+$/g,"");
-  L.push(`_${appeal}_`, "", "🙏🏻 *धन निरंकार जी* 🙏🏻");
-  return L.join("\n").replace(/\n{3,}/g,"\n\n");
+  if (oneLoc){ const pb = placeBlock(locs[0]); if (pb.length) L.push(...pb, "", DIV, ""); }
+  const cl = ftext(st, "closing");
+  if (cl) L.push("🌸 *आप सभी से प्रेमपूर्ण विनम्र निवेदन* 🌸", "", cl, "");
+  L.push("🌹 *धन निरंकार जी* 🌹");
+  return tidy(L);
 }
+
+function buildSpecial(st){
+  const sp = st.special, T = st.text || {}, d = dparts(sp.date);
+  const v = person(sp.visitor), bh = (sp.bhawan||"").trim() || "सत्संग भवन";
+  const L = ["🙏🏻 *धन निरंकार जी* 🙏🏻", "", "🌸 *सतगुरु की विशेष रहमत* 🌸", ""];
+  L.push(`सतगुरु माता सुदीक्षा जी महाराज के आशीर्वाद से आने वाले ${d ? `*${d.day}*` : "____"} के दिन ${v ? `*आदरणीय ${v}*` : "आदरणीय महात्मा ____ जी"} ${bh} में पधारकर, सत्संग रूप में हम सब पर बख्शीश करने आ रहे है जी।`, "");
+  L.push("🌸 *सत्संग विवरण* 🌸", "");
+  if (d) L.push(`*दिनांक :* ${dateS(sp.date)}`);
+  const tt = timeS(sp.start, sp.end); if (tt) L.push(`*समय :* ${tt}`);
+  const ln = sp.langarNote ? txt(sp.langarText, LANGAR_NOTE) : ""; if (ln) L.push("", ln);
+  L.push("", ...sevaLines(sp, "🌹", true), "");
+  const a = addrLines(sp.loc.place);
+  if (a.length) L.push(`*स्थान :* ${a[0]}`, ...a.slice(1));
+  if ((sp.loc.map||"").trim()) L.push(`*लोकेशन :* ${sp.loc.map.trim()}`);
+  L.push("");
+  const cl = ftext(st, "sclosing"); if (cl) L.push(cl, "");
+  L.push("🙏🏻 *धन निरंकार जी* 🙏🏻");
+  return tidy(L);
+}
+function buildMessage(st){ return st.mode === "special" ? buildSpecial(st) : buildRegular(st); }
 // GEN-END
 
 /* ---------------- UI ---------------- */
 const $ = id => document.getElementById(id);
-const KEY = "sangatNotice.v3";
-const KNOWN_PLACES = {
-  "सन्त निरंकारी सत्संग भवन, C-291, Main 40 ft Road, Sai Kunj, New Palam Vihar, Gurugram":"https://maps.app.goo.gl/8Lf9Hz1zyGzpFT767",
-  "संत निरंकारी सत्संग भवन, शाखा ग्रेटर गुरुग्राम, औराविया बैंक्वेट के पास, मीटर रोड, सेक्टर 102, धानकोट, गुरुग्राम।":"https://maps.app.goo.gl/c3UU7jAFucLErcfs9",
-  "नाहरपुर चौपाल, गाँव नाहरपुर, गुरुग्राम।":""
-};
-const PLACE_LABELS = {
-  "सन्त निरंकारी सत्संग भवन, C-291, Main 40 ft Road, Sai Kunj, New Palam Vihar, Gurugram":"सत्संग भवन, Sai Kunj (New Palam Vihar)",
-  "संत निरंकारी सत्संग भवन, शाखा ग्रेटर गुरुग्राम, औराविया बैंक्वेट के पास, मीटर रोड, सेक्टर 102, धानकोट, गुरुग्राम।":"सत्संग भवन, ग्रेटर गुरुग्राम (सेक्टर 102)",
-  "नाहरपुर चौपाल, गाँव नाहरपुर, गुरुग्राम।":"नाहरपुर चौपाल"
-};
-const FIRST_PLACE = Object.keys(KNOWN_PLACES)[0];
-const blank = (from) => ({ name:"", short:"", start:"", end:"", seva:{title:"महात्मा",name:""}, sanchalan:{title:"महात्मा",name:""},
-  prasad:{title:"बहन",name:""}, ptStart:"", ptEnd:"",
-  custom: from ? !!from.custom : false,
-  place: from ? from.place : FIRST_PLACE, map: from ? from.map : KNOWN_PLACES[FIRST_PLACE] });
+const KEY = "sangatNotice.v4", OLD_KEY = "sangatNotice.v3";
+const PLACES = [
+  { addr:"सन्त निरंकारी सत्संग भवन\nC-291, Main 40 Ft Road,\nSai Kunj, New Palam Vihar, Gurugram",
+    map:"https://maps.app.goo.gl/8Lf9Hz1zyGzpFT767", label:"सत्संग भवन, Sai Kunj (New Palam Vihar)", bhawan:"साई कुंज भवन" },
+  { addr:"संत निरंकारी सत्संग भवन, शाखा ग्रेटर गुरुग्राम\nऔराविया बैंक्वेट के पास, मीटर रोड,\nसेक्टर 102, धानकोट, गुरुग्राम",
+    map:"https://maps.app.goo.gl/c3UU7jAFucLErcfs9", label:"सत्संग भवन, ग्रेटर गुरुग्राम (सेक्टर 102)", bhawan:"ग्रेटर गुरुग्राम सत्संग भवन" },
+  { addr:"नाहरपुर चौपाल, गाँव नाहरपुर, गुरुग्राम", map:"", label:"नाहरपुर चौपाल", bhawan:"नाहरपुर चौपाल" }
+];
+const NAMES = ["सुबह की सत्संग","शाम की सत्संग","बहनों की सत्संग","बाल सत्संग","मंगलवार शाम की सांझी सत्संग","शनिवार शाम की सांझी सत्संग","रविवार शाम की सांझी सत्संग","सायंकालीन सांझी सत्संग",
+  "English Medium Satsang (EMS)","रविवारीय साप्ताहिक साझा सत्संग","सत्संग"];
 
-function todayISO(){ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
-const DEFAULT_SANGAT = () => Object.assign(blank(), {
-  name:"सुबह की सत्संग", start:"07:30", end:"08:30",
-  seva:{title:"महात्मा", name:"विवेक"}, sanchalan:{title:"महात्मा", name:"नीरज"},
-  prasad:{title:"बहन", name:"संध्या मिश्रा"}, ptStart:"07:00", ptEnd:"07:15" });
-const DEFAULT_PEOPLE = ["विवेक","नीरज","संध्या मिश्रा"];
-const freshState = () => ({ date: todayISO(), sangats:[DEFAULT_SANGAT()], appeal:"", places:{}, people:DEFAULT_PEOPLE.slice() });
-let state = freshState();
-try { const s = JSON.parse(localStorage.getItem(KEY)||"null"); if (s && Array.isArray(s.sangats) && s.sangats.length) state = Object.assign(state, s, { date: todayISO() }); } catch(e){}
-state.sangats = state.sangats.map(x => Object.assign(blank(x), x));
-let openIdx = 0;                                   // which card is expanded when there are several
+function todayISO(){ const d = new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+const P = (title, name) => ({ title, name });
+const loc0 = () => ({ place:PLACES[0].addr, map:PLACES[0].map, custom:false });
+const newSangat = () => ({
+  name:"सुबह की सत्संग", nameCustom:false, date:todayISO(), start:"07:30", end:"08:30",
+  sanchalan:P("महात्मा","नीरज"), vichar:P("महात्मा","विवेक"),
+  prasadOn:false, prasadType:"प्रसाद सेवा", prasad:P("बहन","संध्या मिश्रा"),
+  ptOn:false, ptStart:"07:00", ptEnd:"07:15",
+  noteOn:false, note:"", contactOn:false, contact:{ title:"महात्मा", name:"", phone:"" },
+  ownPlace:false, loc:loc0() });
+const newSpecial = () => ({
+  visitor:P("महात्मा",""), date:todayISO(), start:"10:00", end:"12:00", langarNote:true,
+  sanchalan:P("महात्मा","नीरज"), vichar:P("महात्मा","विवेक"),
+  prasadType:"लंगर प्रसाद सेवा", prasad:P("बहन","संध्या मिश्रा"),
+  loc:loc0(), bhawan:PLACES[0].bhawan });
+// Weekly timetable — what each day's programme looks like by default (0 = रविवार).
+const SCHEDULE = {
+  morning: { name:"सुबह की सत्संग", start:"07:30", end:"08:30", ptOn:true, ptStart:"07:00", ptEnd:"07:15" },
+  mahila:  { name:"बहनों की सत्संग", start:"17:00", end:"18:30" },
+  sanjhi:  { name:"{day} शाम की सांझी सत्संग", start:"18:30", end:"20:30" },     // {day} → रविवार / शनिवार / मंगलवार
+  bal:     { name:"बाल सत्संग", start:"17:00", end:"18:00", noteOn:true, note:NOTES.bal }
+};
+const WEEK = [["bal","sanjhi"], ["morning"], ["morning","sanjhi"], ["morning"], ["morning","mahila"], ["morning"], ["morning","sanjhi"]];
+const weekday = iso => { const [y,m,d] = iso.split("-").map(Number); return new Date(y,m-1,d).getDay(); };
+const scheduleFor = iso => WEEK[weekday(iso)].map(k => { const s = Object.assign(newSangat(), JSON.parse(JSON.stringify(SCHEDULE[k])), { date:iso }); s.name = s.name.replace("{day}", DAYS[weekday(iso)]); return s; });
+const fresh = () => ({ mode:"regular", sangats:scheduleFor(todayISO()), loc:loc0(), special:newSpecial(), text:{}, textOff:{}, places:{}, people:["नीरज","विवेक","संध्या मिश्रा"] });
 
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function deepMerge(a, b){
+  for (const k in b){
+    if (b[k] && typeof b[k]==="object" && !Array.isArray(b[k]) && a[k] && typeof a[k]==="object") deepMerge(a[k], b[k]);
+    else a[k] = b[k];
+  }
+  return a;
+}
+let state = fresh();
+try {
+  const s = JSON.parse(localStorage.getItem(KEY) || "null");
+  if (s && Array.isArray(s.sangats) && s.sangats.length){
+    state = Object.assign(fresh(), s);
+    state.sangats = s.sangats.map(x => deepMerge(newSangat(), x));
+    state.special = deepMerge(newSpecial(), s.special || {});
+    state.loc = Object.assign(loc0(), s.loc || {});
+    state.text = s.text || {}; state.textOff = s.textOff || {}; state.places = s.places || {};
+  } else {                                           // carry names + own places over from the old page
+    const o = JSON.parse(localStorage.getItem(OLD_KEY) || "null");
+    if (o){
+      if (Array.isArray(o.people) && o.people.length) state.people = o.people;
+      if (o.places) for (const [k,v] of Object.entries(o.places)) if (!/Sai Kunj|सेक्टर 102|नाहरपुर/.test(k)) state.places[k] = v;
+    }
+  }
+} catch(e){}
+// Dates never stay in the past: on open (and past midnight) they move to today.
+function bumpDates(){
+  const t = todayISO();
+  // every time the page opens (and past midnight) the programme is today's timetable, freshly filled
+  state.sangats = scheduleFor(t);
+  if (!state.special.date || state.special.date < t) state.special.date = t;
+}
+bumpDates();
+const textEdit = {};                                // which fixed texts are open for editing
+
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const getP = (o, p) => p.split(".").reduce((a, k) => a == null ? a : a[k], o);
+function setP(o, p, v){ const k = p.split("."), last = k.pop(); k.reduce((a, x) => a[x], o)[last] = v; }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
-function allPlaces(){ return Object.assign({}, KNOWN_PLACES, state.places||{}); }
-function placeLabel(p){ return PLACE_LABELS[p] || (p.length>42 ? p.slice(0,40)+"…" : p); }
+function allPlaces(){ const o = {}; PLACES.forEach(p => o[p.addr] = p.map); return Object.assign(o, state.places || {}); }
+const placeInfo = a => PLACES.find(p => p.addr === a);
+function placeLabel(a){ const k = placeInfo(a); if (k) return k.label; const one = a.replace(/\s*\n+\s*/g, ", "); return one.length > 44 ? one.slice(0,42) + "…" : one; }
 function fillPeople(){ $("dl-people").innerHTML = (state.people||[]).map(p => `<option value="${esc(p)}">`).join(""); }
+function addPerson(v){ state.people = [v, ...(state.people||[]).filter(x => x !== v)].slice(0,60); fillPeople(); }
 function t12(t){ if (!t) return ""; const [H,M] = t.split(":").map(Number); return `${H%12||12}:${String(M).padStart(2,"0")} ${H>=12?"PM":"AM"}`; }
+function summary(s){
+  const d = dparts(s.date);
+  return [d ? `${d.day}, ${d.short}` : "", s.start ? t12(s.start) + (s.end ? " – " + t12(s.end) : "") : ""].filter(Boolean).join(" · ");
+}
 
-/* ---- field builders ---- */
-const row = (ico, label, control, opts={}) =>
-  `<div class="f${opts.top ? " top" : ""}"><div class="fl"><span class="ico">${ico}</span><span>${label}${opts.optional ? "<small>वैकल्पिक</small>" : ""}</span></div><div>${control}</div></div>`;
-
-function timeCtl(i, key, suffix){
-  const v = state.sangats[i][key] || "";
+/* ---- control builders (every control is bound to a state path) ---- */
+const fld = (label, ctl) => `<div class="fld"><div class="lbl">${label}</div>${ctl}</div>`;
+function segCtl(path, opts){
+  const v = getP(state, path);
+  return `<span class="seg">${opts.map(o => `<button type="button" data-set="${path}" data-val="${esc(o)}" aria-pressed="${o===v}">${esc(o)}</button>`).join("")}</span>`;
+}
+function personCtl(path, ph){
+  const p = getP(state, path);
+  return `<div class="pf">${segCtl(path + ".title", ["महात्मा","बहन"])}
+    <input data-path="${path}.name" list="dl-people" placeholder="${ph || "नाम"}" value="${esc(p.name)}"></div>`;
+}
+function dateCtl(path){
+  const v = getP(state, path);
+  return `<div class="dt"><input type="date" data-path="${path}" value="${esc(v)}"><span class="dhint">${esc(dateR(v))}</span></div>`;
+}
+function timeCtl(path, suffix){
+  const v = getP(state, path) || "";
   let h12 = "", mm = "00", ap = "AM";
   if (v){ const [H,M] = v.split(":").map(Number); h12 = String(H%12||12); mm = String(M).padStart(2,"0"); ap = H>=12 ? "PM" : "AM"; }
-  const mins = []; for (let m=0;m<60;m+=5) mins.push(String(m).padStart(2,"0"));
+  const mins = []; for (let m = 0; m < 60; m += 5) mins.push(String(m).padStart(2,"0"));
   if (!mins.includes(mm)) mins.push(mm);
-  return `<span class="tp" data-i="${i}" data-tk="${key}">
+  return `<span class="tp" data-tpath="${path}">
     <span class="tbox">
-      <select data-part="h" aria-label="hour"><option value="">--</option>${[1,2,3,4,5,6,7,8,9,10,11,12].map(h=>`<option${String(h)===h12?" selected":""}>${h}</option>`).join("")}</select>
+      <select data-part="h" aria-label="घंटा"><option value="">--</option>${[1,2,3,4,5,6,7,8,9,10,11,12].map(h => `<option${String(h)===h12?" selected":""}>${h}</option>`).join("")}</select>
       <b>:</b>
-      <select data-part="m" aria-label="minute">${mins.map(m=>`<option${m===mm?" selected":""}>${m}</option>`).join("")}</select>
+      <select data-part="m" aria-label="मिनट">${mins.map(m => `<option${m===mm?" selected":""}>${m}</option>`).join("")}</select>
     </span>
-    <span class="seg ap">${["AM","PM"].map(x=>`<button type="button" data-ap="${x}" aria-pressed="${x===ap}">${x}</button>`).join("")}</span>
+    <span class="seg ap">${["AM","PM"].map(x => `<button type="button" data-ap="${x}" aria-pressed="${x===ap}">${x}</button>`).join("")}</span>
     <span class="tsep">${suffix}</span>
   </span>`;
 }
-function timePair(i, a, b, clearable){
-  const s = state.sangats[i];
-  return `<div class="tpair">${timeCtl(i,a,"से")}${timeCtl(i,b,"तक")}${clearable && (s[a]||s[b]) ? `<button class="clear" data-clear="${a},${b}" data-i="${i}">हटाएँ</button>` : ""}</div>`;
-}
-function personCtl(i, key){
-  const p = state.sangats[i][key];
-  return `<div class="pf">
-    <span class="seg">${["महात्मा","बहन"].map(t=>`<button type="button" data-title="${t}" data-i="${i}" data-pk="${key}" aria-pressed="${t===p.title}">${t}</button>`).join("")}</span>
-    <input data-i="${i}" data-k="${key}.name" list="dl-people" placeholder="नाम लिखें" value="${esc(p.name)}">
-  </div>`;
-}
-function placeCtl(i){
-  const s = state.sangats[i], places = allPlaces();
-  const custom = s.custom || !(s.place in places);
-  const opts = Object.keys(places).map(p => `<option value="${esc(p)}"${!custom && p===s.place ? " selected" : ""}>${esc(placeLabel(p))}</option>`).join("");
-  const sel = `<select data-i="${i}" data-place="1" aria-label="स्थान">${opts}<option value="__new"${custom ? " selected" : ""}>✎ नया स्थान लिखें…</option></select>`;
+const timePair = (a, b) => `<div class="tpair">${timeCtl(a, "से")}${timeCtl(b, "तक")}</div>`;
+function placeCtl(path){
+  const l = getP(state, path), all = allPlaces(), keys = Object.keys(all);
+  const custom = l.custom || !keys.includes(l.place);
+  const sel = `<select data-placesel="${path}" aria-label="स्थान">${keys.map((a, i) => `<option value="${i}"${!custom && a===l.place ? " selected" : ""}>${esc(placeLabel(a))}</option>`).join("")}<option value="__new"${custom ? " selected" : ""}>✎ नया स्थान लिखें…</option></select>`;
   const body = custom
-    ? `<textarea class="mt8" data-i="${i}" data-k="place" rows="2" placeholder="पूरा पता लिखें">${esc(s.place)}</textarea>
-       <input class="mt8" data-i="${i}" data-k="map" placeholder="🗺️ लोकेशन लिंक (वैकल्पिक)" value="${esc(s.map)}">`
-    : `<div class="placebox">${esc(s.place)}</div>
-       <div class="maprow">
-         <span class="mapico">🗺️</span>
-         <input data-i="${i}" data-k="map" inputmode="url" placeholder="लोकेशन लिंक जोड़ें (वैकल्पिक)" value="${esc(s.map)}" aria-label="लोकेशन लिंक">
-         ${s.map ? `<a class="mapopen" href="${esc(s.map)}" target="_blank" rel="noopener" title="Map खोलें">खोलें ↗</a>` : ""}
-       </div>`;
-  return sel + body;
+    ? `<textarea data-path="${path}.place" rows="3" placeholder="पूरा पता लिखें — हर हिस्सा नई लाइन में">${esc(l.place)}</textarea>`
+    : `<div class="addr">${esc(l.place)}</div>`;
+  const map = `<div class="maprow"><input data-path="${path}.map" inputmode="url" placeholder="Google Map लिंक (वैकल्पिक)" value="${esc(l.map)}" aria-label="Google Map लिंक">${l.map ? `<a class="open" href="${esc(l.map)}" target="_blank" rel="noopener">खोलें ↗</a>` : ""}</div>`;
+  return `<div class="place">${sel}${body}${map}</div>`;
 }
-const NAMES = ["सुबह की सत्संग","शाम की सत्संग","सत्संग","English Medium Satsang (EMS)","रविवारीय साप्ताहिक साझा सत्संग","बाल संगत","सायंकालीन संगत"];
 function nameCtl(i){
-  const s = state.sangats[i];
-  const custom = s.nameCustom || !NAMES.includes(s.name);
-  const sel = `<select data-i="${i}" data-namesel="1" aria-label="संगत का नाम">${NAMES.map(n=>`<option${!custom && n===s.name?" selected":""}>${esc(n)}</option>`).join("")}<option value="__new"${custom?" selected":""}>✎ अपना नाम लिखें…</option></select>`;
-  return sel + (custom ? `<input class="mt8" data-i="${i}" data-k="name" placeholder="संगत का नाम लिखें" value="${esc(s.name)}">` : "");
+  const s = state.sangats[i], custom = s.nameCustom || !NAMES.includes(s.name);
+  return `<select data-namesel="${i}" aria-label="सत्संग का नाम">${NAMES.map(n => `<option${!custom && n===s.name ? " selected" : ""}>${esc(n)}</option>`).join("")}<option value="__new"${custom ? " selected" : ""}>✎ अपना नाम लिखें…</option></select>`
+    + (custom ? `<input class="mt8" data-path="sangats.${i}.name" placeholder="सत्संग का नाम लिखें" value="${esc(s.name)}">` : "");
 }
-function summary(s){
-  const t = s.start ? t12(s.start) + (s.end ? " – " + t12(s.end) : "") : "समय नहीं";
-  return `${t} · ${s.place ? placeLabel(s.place) : "स्थान नहीं"}`;
+const opt = (onPath, label, body) =>
+  `<div class="opt"><div class="lbl"><span>${label}</span><button type="button" class="link" data-toggle="${onPath}">हटाएँ</button></div>${body}</div>`;
+
+function cardHTML(s, i, n){
+  const b = `sangats.${i}`;
+  const chips = [["prasadOn","+ प्रसाद / लंगर सेवा"],["ptOn","+ सेवादल PT परेड"],["noteOn","+ नोट"],["contactOn","+ संपर्क"],["ownPlace","+ अलग स्थान"]]
+    .filter(([k]) => !s[k]).map(([k,l]) => `<button type="button" class="chip" data-toggle="${b}.${k}">${l}</button>`).join("");
+  return `<article class="card">
+    <header class="ch">
+      <span class="cn">${i+1}</span><span class="ct">${esc(title(s))}</span><span class="cs">${esc(summary(s))}</span>
+      ${n > 1 ? `<span class="acts">
+        <button class="ib" data-act="up" data-i="${i}" ${i===0?"disabled":""} title="ऊपर" aria-label="ऊपर">↑</button>
+        <button class="ib" data-act="down" data-i="${i}" ${i===n-1?"disabled":""} title="नीचे" aria-label="नीचे">↓</button>
+        <button class="ib del" data-act="del" data-i="${i}" title="हटाएँ" aria-label="हटाएँ">✕</button></span>` : ""}
+    </header>
+    <div class="cb">
+      <div class="g2">${fld("सत्संग का नाम", nameCtl(i))}${fld("दिनांक", dateCtl(b+".date"))}</div>
+      ${fld("समय", timePair(b+".start", b+".end"))}
+      <div class="g2">${fld("मंच संचालन", personCtl(b+".sanchalan"))}${fld("स्टेज से विचार", personCtl(b+".vichar"))}</div>
+      ${s.prasadOn ? opt(b+".prasadOn", "प्रसाद / लंगर सेवा", segCtl(b+".prasadType", ["प्रसाद सेवा","लंगर प्रसाद सेवा"]) + `<div class="mt8">${personCtl(b+".prasad")}</div>`) : ""}
+      ${s.ptOn ? opt(b+".ptOn", "सेवादल PT परेड", timePair(b+".ptStart", b+".ptEnd")) : ""}
+      ${s.noteOn ? opt(b+".noteOn", "नोट", `<textarea data-path="${b}.note" rows="2" placeholder="कोई विशेष सूचना">${esc(s.note)}</textarea>
+          <div class="presets"><span>तैयार पंक्ति:</span><button type="button" class="link" data-preset="${b}.note" data-val="bal">बाल सत्संग</button><button type="button" class="link" data-preset="${b}.note" data-val="langar">लंगर व्यवस्था</button></div>`) : ""}
+      ${s.contactOn ? opt(b+".contactOn", "संपर्क (जिनके यहाँ सत्संग है)", personCtl(b+".contact") + `<input class="mt8" data-path="${b}.contact.phone" inputmode="tel" placeholder="मोबाइल नंबर" value="${esc(s.contact.phone)}">`) : ""}
+      ${s.ownPlace ? opt(b+".ownPlace", "इस सत्संग का स्थान", placeCtl(b+".loc")) : ""}
+      ${chips ? `<div class="chips">${chips}</div>` : ""}
+    </div>
+  </article>`;
+}
+const TEXT_INFO = {
+  intro:   ["आरंभ का संदेश", "सबसे ऊपर, “धन निरंकार जी” के ठीक बाद"],
+  invite:  ["आमंत्रण पंक्ति", "आरंभ के संदेश के बाद, मोटे अक्षरों में"],
+  closing: ["विनम्र निवेदन", "सबसे नीचे, अंतिम “धन निरंकार जी” से पहले"],
+  sclosing:["विनम्र निवेदन", "सबसे नीचे, अंतिम “धन निरंकार जी” से पहले"]
+};
+function textsHTML(keys){
+  const rows = keys.map(([k, rows]) => {
+    const [name, where] = TEXT_INFO[k], val = state.text[k] ?? DEF[k], changed = state.text[k] != null, on = !state.textOff[k], open = on && textEdit[k];
+    const snip = val.trim() ? `<div class="tsnip">${esc(val.trim().replace(/\s*\n+\s*/g, " "))}</div>` : `<div class="tsnip empty">खाली है — संदेश में नहीं आएगा</div>`;
+    return `<div class="trow${on ? "" : " off"}">
+      <div class="thead">
+        <input type="checkbox" class="tchk" data-texton="${k}"${on ? " checked" : ""} aria-label="${name} संदेश में जोड़ें">
+        <div class="tinfo"><div class="tname">${name}${changed && on ? `<span class="badge">बदला गया</span>` : ""}</div><div class="twhere">${on ? where : "संदेश में नहीं जुड़ेगा — जोड़ने के लिए टिक करें"}</div>${open || !on ? "" : snip}</div>
+        ${open || !on ? "" : `<button type="button" class="tbtn" data-tedit="${k}">बदलें</button>`}
+      </div>
+      ${open ? `<div class="tedit"><textarea data-text="${k}" rows="${rows}">${esc(val)}</textarea>
+        <div class="tfoot">${changed ? `<button type="button" class="link" data-textreset="${k}">मूल पाठ पर लौटाएँ</button>` : "<span></span>"}<button type="button" class="tbtn" data-tedit="${k}">हो गया</button></div></div>` : ""}
+    </div>`;
+  }).join("");
+  return `<section class="sec">
+    <div class="sh"><h2>शुरुआत और अंत का पाठ</h2></div>
+    <p class="sdesc">टिक किए हुए हिस्से हर संदेश में अपने-आप जुड़ते हैं। जो नहीं चाहिए, उसका टिक हटा दें; शब्द बदलने हों तो “बदलें” दबाएँ।</p>
+    <div class="panel tlist">${rows}</div>
+  </section>`;
+}
+function regularHTML(){
+  const n = state.sangats.length;
+  return `<section class="sec">
+      <div class="sh"><h2>सत्संग कार्यक्रम</h2><button type="button" class="link" data-act="reset">डिफ़ॉल्ट पर लौटाएँ</button></div>
+      </div>
+      <div class="cards">${state.sangats.map((s, i) => cardHTML(s, i, n)).join("")}</div>
+      <button type="button" class="add" data-act="add">+ सत्संग जोड़ें</button>
+      <p class="hint">एक ही दिन के सभी सत्संग हों तो दिन संदेश में एक बार ऊपर लिखा जाएगा।</p>
+    </section>
+    <section class="sec">
+      <div class="sh"><h2>सत्संग स्थल</h2></div>
+      <div class="panel">${placeCtl("loc")}
+        <p class="hint">सभी सत्संग के लिए। किसी सत्संग का स्थान अलग हो तो उसके कार्ड में “+ अलग स्थान” चुनें — तब हर सत्संग के साथ उसका स्थान लिखा जाएगा।</p></div>
+    </section>
+    ${textsHTML([["intro",5],["invite",2],["closing",6]])}`;
+}
+function specialHTML(){
+  const b = "special", sp = state.special;
+  return `<section class="sec">
+      <div class="sh"><h2>विशेष सत्संग</h2><button type="button" class="link" data-act="reset">डिफ़ॉल्ट पर लौटाएँ</button></div>
+      <div class="panel">
+        ${fld("पधारने वाले महात्मा", personCtl(b+".visitor", "नाम लिखें"))}
+        <div class="g2">${fld("दिनांक", dateCtl(b+".date"))}</div>
+        ${fld("समय", timePair(b+".start", b+".end"))}
+        ${sp.langarNote
+          ? opt(b+".langarNote", "लंगर की सूचना — यह पंक्ति संदेश में जुड़ेगी",
+              `<textarea data-path="${b}.langarText" rows="2">${esc(sp.langarText ?? LANGAR_NOTE)}</textarea>
+               <div class="presets">${sp.langarText != null && sp.langarText !== LANGAR_NOTE ? `<button type="button" class="link" data-preset="${b}.langarText" data-val="langarS">मूल पाठ पर लौटाएँ</button>` : `<span>समय के ठीक नीचे आएगी। चाहें तो शब्द बदल सकते हैं।</span>`}</div>`)
+          : `<div class="chips"><button type="button" class="chip" data-toggle="${b}.langarNote">+ लंगर की सूचना जोड़ें</button><span class="hint" style="align-self:center">“सत्संग के पश्चात … लंगर प्रसाद की व्यवस्था भी रहेगी जी।”</span></div>`}
+        <div class="g2">${fld("मंच संचालन", personCtl(b+".sanchalan"))}${fld("स्टेज से विचार", personCtl(b+".vichar"))}</div>
+        ${fld("प्रसाद / लंगर सेवा", segCtl(b+".prasadType", ["प्रसाद सेवा","लंगर प्रसाद सेवा"]) + `<div class="mt8">${personCtl(b+".prasad")}</div>`)}
+        ${fld("स्थान", placeCtl(b+".loc"))}
+        ${fld("संदेश में स्थान का नाम", `<input data-path="${b}.bhawan" placeholder="जैसे: साई कुंज भवन" value="${esc(sp.bhawan)}"><p class="hint mt8">“… ${esc(sp.bhawan || "साई कुंज भवन")} में पधारकर …”</p>`)}
+        <p class="hint">जो नाम खाली छोड़ेंगे, वह पंक्ति संदेश में नहीं आएगी।</p>
+      </div>
+    </section>
+    ${textsHTML([["sclosing",4]])}`;
 }
 
-function renderList(){
-  const n = state.sangats.length, multi = n>1;
-  $("list").className = multi ? "multi" : "single";
-  if (openIdx >= n) openIdx = n-1;
-  $("list").innerHTML = state.sangats.map((s,i) => `
-    <div class="sangat">
-      <div class="shead" data-toggle="${i}">
-        <span class="snum">${i+1}</span>
-        <div class="sinfo"><div class="stitle">${esc(title(s))}</div><div class="ssum">${esc(summary(s))}</div></div>
-        <div class="sact">
-          <button class="ibtn mv" data-act="up" data-i="${i}" title="ऊपर" aria-label="ऊपर" ${i===0?"disabled":""}>↑</button>
-          <button class="ibtn mv" data-act="down" data-i="${i}" title="नीचे" aria-label="नीचे" ${i===n-1?"disabled":""}>↓</button>
-          <button class="ibtn del" data-act="del" data-i="${i}" title="हटाएँ" aria-label="हटाएँ" ${n===1?"disabled":""}>✕</button>
-        </div>
-      </div>
-      <div class="sbody">
-        ${row("🌸","संगत का नाम",nameCtl(i),{top:true})}
-        ${row(clock(s.start),"समय",timePair(i,"start","end"))}
-        ${row("🙏🏻","स्टेज सेवा",personCtl(i,"seva"))}
-        ${row("🙏🏻","स्टेज संचालन",personCtl(i,"sanchalan"))}
-        ${row("🙏🏻","प्रसाद / लंगर सेवा",
-          `<span class="seg kind">${["प्रसाद सेवा","लंगर सेवा"].map(t=>`<button type="button" data-ptype="${t}" data-i="${i}" aria-pressed="${t===(s.prasadType||"प्रसाद सेवा")}">${t}</button>`).join("")}</span>`
-          + `<div class="mt8">${personCtl(i,"prasad")}</div>`,{optional:true, top:true})}
-        ${row(clock(s.ptStart||"07:00"),"सेवादल PT परेड",timePair(i,"ptStart","ptEnd",true),{optional:true})}
-        ${row("📍","स्थान",placeCtl(i),{top:true})}
-      </div>
-    </div>`).join("");
+function render(){
+  $("form").innerHTML = state.mode === "special" ? specialHTML() : regularHTML();
+  document.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === state.mode));
+  update();
 }
-
 function update(){
-  $("dateText").textContent = state.date ? "दिनाँक " + hindiDate(state.date) : "";
-  if (!state.appeal) $("appeal").value = autoAppeal(state.sangats);
-  $("appealReset").hidden = !state.appeal;
-  $("appealHint").textContent = state.appeal ? "आपका लिखा अनुरोध भेजा जाएगा।" : "अपने आप लिखा गया है — चाहें तो बदल सकते हैं।";
   $("preview").innerHTML = esc(buildMessage(state))
     .replace(/https?:\/\/\S+/g, u => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`)
-    .replace(/\*([^*\n]+)\*/g, "<b>$1</b>")
-    .replace(/(^|\n)_([^\n]+)_(?=\n|$)/g, "$1<i>$2</i>");
-  document.querySelectorAll(".ssum").forEach((el,i) => { if (state.sangats[i]) el.textContent = summary(state.sangats[i]); });
+    .replace(/\*([^*\n]+)\*/g, "<b>$1</b>");
+  document.querySelectorAll(".card .cs").forEach((el, i) => { if (state.sangats[i]) el.textContent = summary(state.sangats[i]); });
   save();
 }
 
 /* ---- events ---- */
-function setDeep(obj, path, val){ const k = path.split("."); let o = obj; while (k.length>1) o = o[k.shift()]; o[k[0]] = val; }
 function readPicker(tp){
   const h = tp.querySelector('[data-part="h"]').value, m = tp.querySelector('[data-part="m"]').value;
   const ap = tp.querySelector('[data-ap][aria-pressed="true"]').dataset.ap;
   if (!h) return "";
-  let H = +h % 12; if (ap==="PM") H += 12;
+  let H = +h % 12; if (ap === "PM") H += 12;
   return String(H).padStart(2,"0") + ":" + m;
 }
-function pickerChanged(tp){ state.sangats[+tp.dataset.i][tp.dataset.tk] = readPicker(tp); renderList(); update(); }
-
-$("list").addEventListener("input", e => {
-  const el = e.target, k = el.dataset.k; if (!k) return;
-  const i = +el.dataset.i;
-  setDeep(state.sangats[i], k, el.value);
-  if (k==="map"){ const pl = (state.sangats[i].place||"").trim();   // same place → same map link everywhere
-    if (pl) state.sangats.forEach(x => { if ((x.place||"").trim()===pl) x.map = el.value; }); }
-  if (k==="name"){ state.sangats[i].nameSet = true; el.closest(".sangat").querySelector(".stitle").textContent = title(state.sangats[i]); }
+const mins = t => { const [h,m] = t.split(":").map(Number); return h*60+m; };
+function setTime(path, v){                             // moving a start time moves its end time too (same duration)
+  const old = getP(state, path); setP(state, path, v);
+  const endPath = path.replace(/\.start$/, ".end").replace(/\.ptStart$/, ".ptEnd");
+  if (endPath === path || !old || !v) return;
+  const end = getP(state, endPath); if (!end) return;
+  const n = ((mins(end) + mins(v) - mins(old)) % 1440 + 1440) % 1440;
+  setP(state, endPath, String(Math.floor(n/60)).padStart(2,"0") + ":" + String(n%60).padStart(2,"0"));
+}
+function allLocs(){ return [state.loc, state.special.loc, ...state.sangats.map(s => s.loc)]; }
+function syncMap(l){                                 // same place → same map link everywhere
+  const pl = (l.place||"").trim(); if (!pl) return;
+  allLocs().forEach(x => { if ((x.place||"").trim() === pl) x.map = l.map; });
+}
+const form = $("form");
+form.addEventListener("input", e => {
+  const el = e.target;
+  if (el.dataset.text){ const k = el.dataset.text; state.text[k] = el.value === DEF[k] ? null : el.value; return update(); }
+  const p = el.dataset.path; if (!p) return;
+  setP(state, p, el.value);
+  if (p.endsWith(".map")) syncMap(getP(state, p.slice(0, -4)));
+  if (el.type === "date"){ const h = el.parentElement.querySelector(".dhint"); if (h) h.textContent = dateR(el.value); }
+  if (/^sangats\.\d+\.name$/.test(p)) el.closest(".card").querySelector(".ct").textContent = title(getP(state, p.slice(0, -5)));
   update();
 });
-$("list").addEventListener("change", e => {
+form.addEventListener("change", e => {
   const el = e.target;
-  const tp = el.closest(".tp"); if (tp) return pickerChanged(tp);
-  if (el.dataset.namesel){
-    const sg = state.sangats[+el.dataset.i]; sg.nameSet = true;
-    if (el.value === "__new"){ sg.nameCustom = true; sg.name = ""; }
-    else { sg.nameCustom = false; sg.name = el.value; }
-    renderList(); update();
-    if (el.value === "__new") document.querySelector(`[data-k="name"][data-i="${el.dataset.i}"]`)?.focus();
+  const tp = el.closest(".tp"); if (tp){ setTime(tp.dataset.tpath, readPicker(tp)); return render(); }
+  if (el.dataset.namesel != null){
+    const s = state.sangats[+el.dataset.namesel];
+    if (el.value === "__new"){ s.nameCustom = true; s.name = ""; }
+    else {
+      s.nameCustom = false; s.name = el.value;
+      if (/बाल/.test(el.value) && !s.noteOn){ s.noteOn = true; s.note = NOTES.bal; }
+    }
+    render();
+    if (el.value === "__new") document.querySelector(`[data-path="sangats.${el.dataset.namesel}.name"]`)?.focus();
     return;
   }
-  if (el.dataset.place){
-    const sg = state.sangats[+el.dataset.i];
-    if (el.value === "__new"){ sg.custom = true; sg.place = ""; sg.map = ""; }
-    else { sg.custom = false; sg.place = el.value; sg.map = allPlaces()[el.value] || ""; }
-    renderList(); update();
-    if (el.value === "__new") document.querySelector(`[data-k="place"][data-i="${el.dataset.i}"]`)?.focus();
+  if (el.dataset.placesel){
+    const lp = el.dataset.placesel, l = getP(state, lp);
+    if (el.value === "__new"){ l.custom = true; l.place = ""; l.map = ""; }
+    else {
+      const all = allPlaces(), a = Object.keys(all)[+el.value];
+      l.custom = false; l.place = a; l.map = all[a] || "";
+      if (lp === "special.loc"){ const k = placeInfo(a); state.special.bhawan = k ? k.bhawan : ""; }
+    }
+    render();
+    if (el.value === "__new") document.querySelector(`[data-path="${lp}.place"]`)?.focus();
     return;
   }
-  const k = el.dataset.k; if (!k) return;
-  const s = state.sangats[+el.dataset.i];
-  if ((k==="place"||k==="map") && s.place.trim()){ state.places = state.places||{}; state.places[s.place.trim()] = s.map.trim(); }
-  if (k.endsWith(".name") && el.value.trim()){ const v = el.value.trim(); state.people = [v, ...(state.people||[]).filter(x=>x!==v)].slice(0,60); fillPeople(); }
+  if (el.dataset.texton){ state.textOff[el.dataset.texton] = !el.checked; return render(); }
+  if (el.dataset.check){ setP(state, el.dataset.check, el.checked); return update(); }
+  const p = el.dataset.path; if (!p) return;
+  if (/\.(place|map)$/.test(p)){
+    const l = getP(state, p.replace(/\.(place|map)$/, ""));
+    if ((l.place||"").trim()){ state.places = state.places || {}; state.places[l.place.trim()] = (l.map||"").trim(); }
+    if (p.endsWith(".map")) return render();
+  }
+  if (/\.name$/.test(p) && !/^sangats\.\d+\.name$/.test(p) && el.value.trim()) addPerson(el.value.trim().replace(/\s*जी$/,""));
+  // Changing a sangat's date brings in that day's default programme (in place of the old day's sangats).
+  const dm = p.match(/^sangats\.(\d+)\.date$/);
+  if (dm && el.value && el.value !== el.defaultValue && +el.value.slice(0,4) >= 2000){
+    const i = +dm[1], old = el.defaultValue, L = state.sangats;
+    const same = L.map((s, j) => j === i || (old && s.date === old) ? j : -1).filter(j => j >= 0);
+    const at = same[0];
+    state.sangats = L.filter((_, j) => !same.includes(j));
+    state.sangats.splice(at, 0, ...scheduleFor(el.value));
+    return render();
+  }
+  if (el.type === "date" || p === "special.bhawan") return render();
   save();
 });
-$("list").addEventListener("click", e => {
-  const apb = e.target.closest("[data-ap]");
-  if (apb){ apb.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b===apb)); return pickerChanged(apb.closest(".tp")); }
-  const tb = e.target.closest("[data-title]");
-  if (tb){ state.sangats[+tb.dataset.i][tb.dataset.pk].title = tb.dataset.title; renderList(); return update(); }
-  const pk = e.target.closest("[data-ptype]");
-  if (pk){ state.sangats[+pk.dataset.i].prasadType = pk.dataset.ptype; renderList(); return update(); }
-  const cl = e.target.closest("[data-clear]");
-  if (cl){ cl.dataset.clear.split(",").forEach(k => state.sangats[+cl.dataset.i][k] = ""); renderList(); return update(); }
-  const b = e.target.closest("[data-act]");
-  if (b){
-    const i = +b.dataset.i, L = state.sangats;
-    if (b.dataset.act==="up" && i>0){ [L[i-1],L[i]] = [L[i],L[i-1]]; if (openIdx===i) openIdx=i-1; else if (openIdx===i-1) openIdx=i; }
-    if (b.dataset.act==="down" && i<L.length-1){ [L[i+1],L[i]] = [L[i],L[i+1]]; if (openIdx===i) openIdx=i+1; else if (openIdx===i+1) openIdx=i; }
-    if (b.dataset.act==="del" && L.length>1 && confirm("इस संगत को हटाएँ?")){ L.splice(i,1); if (openIdx>=i && openIdx>0) openIdx--; }
-    renderList(); return update();
-  }
-});
-$("reset").onclick = () => {
-  if (!confirm("सभी फ़ील्ड डिफ़ॉल्ट मानों पर लौटाएँ?")) return;
-  state = Object.assign(freshState(), { places: state.places, people: state.people });
-  openIdx = 0; $("date").value = state.date; fillPeople(); renderList(); update();
-};
-$("add").onclick = () => {
+
+function addSangat(){
   const last = state.sangats[state.sangats.length-1];
-  const s = blank(last); s.name = "सत्संग";
-  const from = last.end || last.start || "07:30";
-  const [H,M] = from.split(":").map(Number);
+  const s = JSON.parse(JSON.stringify(last));
+  Object.assign(s, { name:"सत्संग", nameCustom:false, prasadOn:false, ptOn:false, noteOn:false, note:"", contactOn:false, contact:{ title:"महात्मा", name:"", phone:"" } });
+  const from = last.end || last.start || "07:30", [H,M] = from.split(":").map(Number);
   s.start = from; s.end = String((H+1)%24).padStart(2,"0") + ":" + String(M).padStart(2,"0");
-  state.sangats.push(s); openIdx = state.sangats.length-1; renderList(); update();
-  $("list").lastElementChild.scrollIntoView({behavior:"smooth", block:"start"});
-};
-$("date").value = state.date;
-$("date").oninput = e => { state.date = e.target.value; update(); };
-// If the page stays open past midnight (or is reopened from the background), move the date to the new today.
-let pageDay = todayISO();
-function refreshToday(){
-  const t = todayISO(); if (t === pageDay) return;
-  pageDay = t; state.date = t; $("date").value = t; update();
+  state.sangats.push(s); render();
+  document.querySelector(".cards").lastElementChild.scrollIntoView({ behavior:"smooth", block:"start" });
 }
+function resetMode(){
+  if (!confirm("इस पेज के सभी फ़ील्ड डिफ़ॉल्ट पर लौटाएँ?")) return;
+  if (state.mode === "special"){ state.special = newSpecial(); state.text.sclosing = null; delete state.textOff.sclosing; }
+  else { state.sangats = scheduleFor(todayISO()); state.loc = loc0(); state.text.intro = state.text.invite = state.text.closing = null; ["intro","invite","closing"].forEach(k => delete state.textOff[k]); }
+  render();
+}
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-ap],[data-set],[data-toggle],[data-preset],[data-textreset],[data-tedit],[data-act],[data-mode],[data-view]");
+  if (!t) return;
+  if (t.dataset.ap){
+    t.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === t));
+    const tp = t.closest(".tp"); setTime(tp.dataset.tpath, readPicker(tp)); return render();
+  }
+  if (t.dataset.set){ setP(state, t.dataset.set, t.dataset.val); return render(); }
+  if (t.dataset.toggle){
+    const p = t.dataset.toggle, on = !getP(state, p); setP(state, p, on);
+    if (on && p.endsWith(".ownPlace")) getP(state, p.slice(0, -9)).loc = { place:"", map:"", custom:true };
+    render();
+    if (on){ const k = p.split(".").pop(); const f = { langarNote:".langarText", prasadOn:".prasad.name", contactOn:".contact.name", noteOn:".note", ownPlace:".loc.place" }[k];
+      if (f) document.querySelector(`[data-path="${p.slice(0, -k.length-1)}${f}"]`)?.focus(); }
+    return;
+  }
+  if (t.dataset.preset){ setP(state, t.dataset.preset, NOTES[t.dataset.val]); return render(); }
+  if (t.dataset.tedit){
+    const k = t.dataset.tedit; textEdit[k] = !textEdit[k]; render();
+    if (textEdit[k]){ const ta = document.querySelector(`[data-text="${k}"]`); ta?.focus(); ta?.setSelectionRange(ta.value.length, ta.value.length); }
+    return;
+  }
+  if (t.dataset.textreset){ state.text[t.dataset.textreset] = null; return render(); }
+  if (t.dataset.mode){ state.mode = t.dataset.mode; return render(); }
+  if (t.dataset.view){ document.body.dataset.view = t.dataset.view; setView(); scrollTo(0,0); return; }
+  const act = t.dataset.act, i = +t.dataset.i, L = state.sangats;
+  if (act === "add") return addSangat();
+  if (act === "reset") return resetMode();
+  if (act === "up" && i > 0) [L[i-1], L[i]] = [L[i], L[i-1]];
+  if (act === "down" && i < L.length-1) [L[i+1], L[i]] = [L[i], L[i+1]];
+  if (act === "del" && L.length > 1 && confirm("इस सत्संग को हटाएँ?")) L.splice(i, 1);
+  render();
+});
+function setView(){ const v = document.body.dataset.view || "edit"; document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === v)); }
+
+// If the page stays open past midnight (or comes back from the background), move past dates to today.
+let pageDay = todayISO();
+function refreshToday(){ const t = todayISO(); if (t === pageDay) return; pageDay = t; bumpDates(); render(); }
 document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshToday(); });
 addEventListener("focus", refreshToday);
 setInterval(refreshToday, 60000);
-$("appeal").oninput = e => { state.appeal = e.target.value === autoAppeal(state.sangats) ? "" : e.target.value; update(); };
-$("appealReset").onclick = () => { state.appeal = ""; update(); };
 
-function toast(m){ $("toast").textContent = m; clearTimeout(toast.t); toast.t = setTimeout(()=>$("toast").textContent="", 3000); }
+function toast(m){ $("toast").textContent = m; clearTimeout(toast.t); toast.t = setTimeout(() => $("toast").textContent = "", 3000); }
 async function copyMsg(){
   try { await navigator.clipboard.writeText(buildMessage(state)); toast("संदेश कॉपी हो गया"); }
   catch(e){ toast("Copy blocked by the browser"); }
 }
 async function shareMsg(){
   const text = buildMessage(state);
-  if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
-    try { await navigator.share({ text }); return; } catch(e){ if (e.name==="AbortError") return; }
+  if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)){
+    try { await navigator.share({ text }); return; } catch(e){ if (e.name === "AbortError") return; }
   }
   window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
 }
 document.querySelectorAll("[data-copy]").forEach(b => b.onclick = copyMsg);
 document.querySelectorAll("[data-share]").forEach(b => b.onclick = shareMsg);
 
-fillPeople(); renderList(); update();
+fillPeople(); setView(); render();
 </script>
-<!-- Visit counter (GoatCounter: no cookies, no personal data) -->
-<script data-goatcounter="https://madhursharma1999.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<!-- Visit counter (GoatCounter: no cookies, no personal data).
+     Sends a tiny request straight to our counter instead of loading gc.zgo.at/count.js, which ad blockers block. -->
 <script>
-  function gcEvent(name){ try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch(e){} }
+  const GC_URL = "https://madhursharma1999.goatcounter.com/count";
+  function gcHit(path, title, isEvent){
+    try {
+      if (!/^https?:$/.test(location.protocol) || /^(localhost|127\.)/.test(location.hostname)) return;   // only count the live site
+      const q = new URLSearchParams({
+        p: path, t: title || document.title, e: isEvent ? "true" : "false",
+        r: isEvent ? "" : document.referrer, q: location.search,
+        s: [screen.width, screen.height, devicePixelRatio || 1].join(","), rnd: Math.random().toString(36).slice(2)
+      });
+      (new Image()).src = GC_URL + "?" + q.toString();
+    } catch(e){}
+  }
+  function gcEvent(name){ gcHit(name, name, true); }
+  gcHit(location.pathname, document.title, false);
   document.querySelectorAll("[data-share]").forEach(b => b.addEventListener("click", () => gcEvent("notice: share to whatsapp")));
   document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => gcEvent("notice: copy message")));
 </script>
