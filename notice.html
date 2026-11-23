@@ -353,7 +353,7 @@ const SCHEDULE = {
 };
 const WEEK = [["bal","sanjhi"], ["morning"], ["morning","sanjhi"], ["morning"], ["morning","mahila"], ["morning"], ["morning","sanjhi"]];
 const weekday = iso => { const [y,m,d] = iso.split("-").map(Number); return new Date(y,m-1,d).getDay(); };
-const scheduleFor = iso => WEEK[weekday(iso)].map(k => { const s = Object.assign(newSangat(), JSON.parse(JSON.stringify(SCHEDULE[k])), { date:iso }); s.name = s.name.replace("{day}", DAYS[weekday(iso)]); return s; });
+const scheduleFor = iso => WEEK[weekday(iso)].map(k => { const s = Object.assign(newSangat(), JSON.parse(JSON.stringify(SCHEDULE[k])), { date:iso, auto:true }); s.name = s.name.replace("{day}", DAYS[weekday(iso)]); return s; });
 const fresh = () => ({ mode:"regular", sangats:scheduleFor(todayISO()), loc:loc0(), special:newSpecial(), text:{}, textOff:{}, places:{}, people:["नीरज","विवेक","संध्या मिश्रा"] });
 
 function deepMerge(a, b){
@@ -636,11 +636,12 @@ form.addEventListener("change", e => {
     if (p.endsWith(".map")) return render();
   }
   if (/\.name$/.test(p) && !/^sangats\.\d+\.name$/.test(p) && el.value.trim()) addPerson(el.value.trim().replace(/\s*जी$/,""));
-  // Changing a sangat's date brings in that day's default programme (in place of the old day's sangats).
+  // Changing the date of a timetable sangat brings in that day's default programme (in place of the old day's
+  // timetable sangats). A sangat added by hand with “+ सत्संग जोड़ें” just takes the new date.
   const dm = p.match(/^sangats\.(\d+)\.date$/);
-  if (dm && el.value && el.value !== el.defaultValue && +el.value.slice(0,4) >= 2000){
+  if (dm && state.sangats[+dm[1]].auto && el.value && el.value !== el.defaultValue && +el.value.slice(0,4) >= 2000){
     const i = +dm[1], old = el.defaultValue, L = state.sangats;
-    const same = L.map((s, j) => j === i || (old && s.date === old) ? j : -1).filter(j => j >= 0);
+    const same = L.map((s, j) => j === i || (s.auto && old && s.date === old) ? j : -1).filter(j => j >= 0);
     const at = same[0];
     state.sangats = L.filter((_, j) => !same.includes(j));
     state.sangats.splice(at, 0, ...scheduleFor(el.value));
@@ -653,7 +654,7 @@ form.addEventListener("change", e => {
 function addSangat(){
   const last = state.sangats[state.sangats.length-1];
   const s = JSON.parse(JSON.stringify(last));
-  Object.assign(s, { name:"सत्संग", nameCustom:false, prasadOn:false, ptOn:false, noteOn:false, note:"", contactOn:false, contact:{ title:"महात्मा", name:"", phone:"" } });
+  Object.assign(s, { auto:false, name:"सत्संग", nameCustom:false, prasadOn:false, ptOn:false, noteOn:false, note:"", contactOn:false, contact:{ title:"महात्मा", name:"", phone:"" } });
   const from = last.end || last.start || "07:30", [H,M] = from.split(":").map(Number);
   s.start = from; s.end = String((H+1)%24).padStart(2,"0") + ":" + String(M).padStart(2,"0");
   state.sangats.push(s); render();
